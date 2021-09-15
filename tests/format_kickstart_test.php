@@ -48,7 +48,6 @@ class format_kickstart_test extends advanced_testcase {
      */
     public function test_importing() {
         global $DB, $CFG;
-        $this->resetAfterTest(true);
         $course = $this->getDataGenerator()->create_course([
             'startdate' => 1000,
             'enddate' => 1000,

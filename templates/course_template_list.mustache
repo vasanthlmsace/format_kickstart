@@ -43,29 +43,24 @@
     {
         "has_pro": true,
         "reactionurl_dislike" : "http://moodleurl/course/format/kickstart/format.php",
-        "templates": [
-            {
-                "groups": [
-                    {
-                        "templates": [
-                             {
-                                "id": "2",
-                                "title": "Test",
-                                "description": "This is a test template",
-                                "description_format": "1",
-                                "description_formatted": "This is a test template",
-                                "hashtags": "#tag1 #tag2",
-                                // If placeholder no ID is available.
-                                "isplaceholder": false,
-                                "link": "https://example.com/test/"
-                             }
-                        ]
-                    }
-                ]
-            }
-        ]
+        "templates": [{
+            "groups": [{
+                "templates": [{
+                    "id": "2",
+                    "title": "Test",
+                    "description": "This is a test template",
+                    "description_format": "1",
+                    "description_formatted": "This is a test template",
+                    "hashtags": "#tag1 #tag2",
+                    // If placeholder no ID is available.
+                    "isplaceholder": false,
+                    "link": "https://example.com/test/"
+                }]
+            }]
+        }]
     }
 }}
+
 {{#canmanage}}<a href="{{managetemplateurl}}" target="_blank" class="btn btn-outline-primary pull-right">{{#str}}manage_templates, format_kickstart{{/str}}</a>{{/canmanage}}
 <h3>{{#str}}welcometoyourcourse, format_kickstart{{/str}}</h3>
 {{{teacherinstructions}}}
