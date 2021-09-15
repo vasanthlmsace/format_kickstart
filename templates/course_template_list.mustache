@@ -1,0 +1,111 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template format_kickstart/course_template_list
+
+    Template for the course template list displayed to teachers.
+
+    Classes required for JS:
+    -
+
+    Data attributes required for JS:
+    -
+
+    Context variables required for this template:
+    * has_pro
+    * templates
+        - groups
+            - templates
+                - id
+                - title
+                - description
+                - description_format
+                - description_formatted
+                - hashtags
+                - isplaceholder
+                - link
+
+    Example context (json):
+    {
+        "has_pro": true,
+        "templates": [
+            {
+                "groups": [
+                    {
+                        "templates": [
+                             {
+                                "id": "2",
+                                "title": "Test",
+                                "description": "This is a test template",
+                                "description_format": "1",
+                                "description_formatted": "This is a test template",
+                                "hashtags": "#tag1 #tag2",
+                                // If placeholder no ID is available.
+                                "isplaceholder": false,
+                                "link": "https://example.com/test/"
+                             }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}}
+{{#canmanage}}<a href="{{managetemplateurl}}" target="_blank" class="btn btn-outline-primary pull-right">{{#str}}manage_templates, format_kickstart{{/str}}</a>{{/canmanage}}
+<h3>{{#str}}welcometoyourcourse, format_kickstart{{/str}}</h3>
+{{{teacherinstructions}}}
+
+<hr>
+
+<h4 class="text-muted">{{#str}}course_templates, format_kickstart{{/str}}</h4>
+{{#notemplates}}
+    <p class="alert alert-warning">{{#str}}notemplates, format_kickstart{{/str}}</p>
+{{/notemplates}}
+{{#templates}}
+    {{#groups}}
+        <div class="card-deck mb-2">
+            {{#templates}}
+                {{^isplaceholder}}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{title}}</h5>
+                            <p class="card-text">{{{description_formatted}}}</p>
+                            <small class="text-muted">{{hashtags}}</small>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{{link}}}" class="btn btn-primary">{{#str}}usetemplate, format_kickstart{{/str}}</a>
+                            {{#preview_url}}
+                                <a href="{{preview_url}}" target="_blank" class="btn btn-outline-primary pull-right">{{#str}}preview{{/str}}</a>
+                            {{/preview_url}}
+                        </div>
+                    </div>
+                {{/isplaceholder}}
+                {{#isplaceholder}}
+                    <div class="card bg-secondary">
+
+                        <div class="card-body d-flex">
+                            <div class="align-self-center text-center" style="width: 100%">
+                                <p class="card-text">{{title}}</p>
+                                <a href="{{{link}}}" target="_blank" class="btn btn-dark">{{#str}}learnmore, format_kickstart{{/str}}</a>
+                            </div>
+                        </div>
+                    </div>
+                {{/isplaceholder}}
+            {{/templates}}
+        </div>
+    {{/groups}}
+{{/templates}}
