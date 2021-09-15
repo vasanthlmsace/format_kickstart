@@ -62,7 +62,7 @@ class format_kickstart_test extends advanced_testcase {
         $template->description = '';
         $template->description_format = '';
 
-        $template->id = $DB->insert_record('kickstart_template', $template);
+        $template->id = $DB->insert_record('format_kickstart_template', $template);
 
         $fs = get_file_storage();
 
@@ -108,10 +108,10 @@ class format_kickstart_test extends advanced_testcase {
      */
     public function test_create_template() {
         global $DB;
-        $template = $this->format_kickstart_template_info();
+        $template = $this->format_format_kickstart_template_info();
         $context = \context_system::instance();
         format_kickstart_create_template($template, 1, $context, 'format_kickstart');
-        $count = $DB->count_records('kickstart_template');
+        $count = $DB->count_records('format_kickstart_template');
         $this->assertEquals(1, $count);
     }
 
@@ -131,7 +131,7 @@ class format_kickstart_test extends advanced_testcase {
     /**
      * Get the template info.
      */
-    public function format_kickstart_template_info() {
+    public function format_format_kickstart_template_info() {
         $template = array(
             'id' => 0,
             'title' => 'demo test 1',

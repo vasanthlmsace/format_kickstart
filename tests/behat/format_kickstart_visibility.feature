@@ -76,4 +76,3 @@ Feature: Check the kickstart course format features.
     And I start watching to see if a new page loads
     And I follow "Test course 1"
     Then I should see "Introduction"
-  

@@ -64,7 +64,7 @@ class template_table extends \table_sql {
         }
         $headers[] = get_string('actions');
         $columns[] = 'actions';
-        $this->totaltemplates = $DB->count_records('kickstart_template', null);
+        $this->totaltemplates = $DB->count_records('format_kickstart_template', null);
         $this->no_sorting('tags');
         $this->no_sorting('actions');
         $this->define_columns($columns);
@@ -79,7 +79,7 @@ class template_table extends \table_sql {
      */
     public function col_tags($data) {
         global $OUTPUT;
-        return $OUTPUT->tag_list(\core_tag_tag::get_item_tags('format_kickstart', 'kickstart_template', $data->id),
+        return $OUTPUT->tag_list(\core_tag_tag::get_item_tags('format_kickstart', 'format_kickstart_template', $data->id),
             null, 'template-tags');
     }
 
@@ -152,7 +152,7 @@ class template_table extends \table_sql {
             $wsql = 'AND ' . $wsql;
         }
         $sql = 'SELECT *
-                FROM {kickstart_template} t
+                FROM {format_kickstart_template} t
                 '.$wsql;
 
         $sort = $this->get_sql_sort();
@@ -163,7 +163,7 @@ class template_table extends \table_sql {
         }
 
         if ($pagesize != -1) {
-            $total = $DB->count_records('kickstart_template');
+            $total = $DB->count_records('format_kickstart_template');
             $this->pagesize($pagesize, $total);
         } else {
             $this->pageable(false);

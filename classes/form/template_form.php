@@ -60,7 +60,7 @@ class template_form extends \moodleform {
         $mform->setType('description', PARAM_RAW);
 
         $mform->addElement('tags', 'tags', get_string('tags'),
-            ['itemtype' => 'kickstart_template', 'component' => 'format_kickstart']);
+            ['itemtype' => 'format_kickstart_template', 'component' => 'format_kickstart']);
 
         $mform->addElement('filemanager', 'course_backup',
             get_string('course_backup', 'format_kickstart'), null, [

@@ -92,9 +92,9 @@ class course_template_list implements \templatable, \renderable {
         $templates = [];
         $listtemplates = [];
         if (format_kickstart_has_pro()) {
-            $listtemplates = $DB->get_records('kickstart_template', null, 'sort');
+            $listtemplates = $DB->get_records('format_kickstart_template', null, 'sort');
         } else {
-            $listtemplates = $DB->get_records('kickstart_template');
+            $listtemplates = $DB->get_records('format_kickstart_template');
         }
         if (!empty($listtemplates)) {
             foreach ($listtemplates as $template) {
@@ -125,7 +125,7 @@ class course_template_list implements \templatable, \renderable {
 
                 $template->description_formatted = format_text($template->description, $template->description_format);
                 $tags = [];
-                foreach (\core_tag_tag::get_item_tags('format_kickstart', 'kickstart_template', $template->id) as $tag) {
+                foreach (\core_tag_tag::get_item_tags('format_kickstart', 'format_kickstart_template', $template->id) as $tag) {
                     $tags[] = '#' . $tag->get_display_name(false);
                 }
                 $template->hashtags = implode(' ', $tags);

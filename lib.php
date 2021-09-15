@@ -276,8 +276,8 @@ function format_kickstart_create_template($template, $sort, $context, $component
         $template->cohortids = json_encode($template->cohortids);
         $template->categoryids = json_encode($template->categoryids);
         $template->roleids = json_encode($template->roleids);
-        $id = $DB->insert_record('kickstart_template', $template);
-        core_tag_tag::set_item_tags('format_kickstart', 'kickstart_template', $id, $context, $template->tags);
+        $id = $DB->insert_record('format_kickstart_template', $template);
+        core_tag_tag::set_item_tags('format_kickstart', 'format_kickstart_template', $id, $context, $template->tags);
         if (isset($template->backupfile) && !empty($template->backupfile)) {
             $filerecord = new stdClass();
             $filerecord->component = 'format_kickstart';

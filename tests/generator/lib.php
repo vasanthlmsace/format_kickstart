@@ -55,7 +55,7 @@ class format_kickstart_generator extends component_generator_base {
             'roleids' => null,
         ], $list);
 
-        $record['id'] = $DB->insert_record('kickstart_template', $record);
-        return $DB->get_record('kickstart_template', ['id' => $record['id']]);
+        $record['id'] = $DB->insert_record('format_kickstart_template', $record);
+        return $DB->get_record('format_kickstart_template', ['id' => $record['id']]);
     }
 }

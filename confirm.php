@@ -38,7 +38,7 @@ require_login();
 require_capability('format/kickstart:import_from_template', $PAGE->context);
 
 $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
-$template = $DB->get_record('kickstart_template', ['id' => $templateid], '*', MUST_EXIST);
+$template = $DB->get_record('format_kickstart_template', ['id' => $templateid], '*', MUST_EXIST);
 
 $PAGE->set_title($template->title);
 $PAGE->set_heading($template->title);
