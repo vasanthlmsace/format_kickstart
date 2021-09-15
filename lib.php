@@ -33,7 +33,7 @@ require_once($CFG->dirroot. '/course/format/lib.php');
  * @copyright  2021 bdecent gmbh <https://bdecent.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_kickstart extends core_courseformat\base{
+class format_kickstart extends \format_base {
 
     /**
      * Definitions of the additional options that this course format uses for course
@@ -96,7 +96,7 @@ class format_kickstart extends core_courseformat\base{
      *
      * If $data does not contain property with the option name, the option will not be updated
      *
-     * @param stdClass|array $data return value from {@link moodleform::get_data()} or array with data
+     * @param stdClass|array $data return value from {moodleform::get_data()} or array with data
      * @param null|int $sectionid  if these are options for course or section id (course_sections.id)
      *     if these are options for section
      * @return bool whether there were any changes to the options values
@@ -182,8 +182,8 @@ class format_kickstart extends core_courseformat\base{
      * In case if course format was changed to 'topics', we try to copy options
      * 'coursedisplay' and 'hiddensections' from the previous format.
      *
-     * @param stdClass|array $data return value from {@link moodleform::get_data()} or array with data
-     * @param stdClass $oldcourse if this function is called from {@link update_course()}
+     * @param stdClass|array $data return value from {moodleform::get_data()} or array with data
+     * @param stdClass $oldcourse if this function is called from {update_course()}
      *     this object contains information about the course before update
      * @return bool whether there were any changes to the options values
      */

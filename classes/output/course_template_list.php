@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 use renderer_base;
 
 require_once("$CFG->dirroot/cohort/lib.php");
+require_once("$CFG->dirroot/course/format/kickstart/lib.php");
 
 /**
  * Widget that displays course templates inside a course.

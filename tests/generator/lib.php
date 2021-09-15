@@ -35,7 +35,7 @@ defined('MOODLE_INTERNAL') || die();
 class format_kickstart_generator extends component_generator_base {
     /**
      * Create a template.
-     * @param $list array templates info.
+     * @param array $list templates info.
      * @return object Get the templates deatils.
      */
     public function create_template($list = []) {
