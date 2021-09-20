@@ -39,7 +39,6 @@ class format_kickstart_test extends advanced_testcase {
      * @return void
      */
     public function setup(): void {
-        $this->resetAfterTest();
         $this->setAdminUser();
     }
 
@@ -48,6 +47,8 @@ class format_kickstart_test extends advanced_testcase {
      */
     public function test_importing() {
         global $DB, $CFG;
+
+        $this->resetAfterTest(true);
         $course = $this->getDataGenerator()->create_course([
             'startdate' => 1000,
             'enddate' => 1000,
@@ -61,7 +62,6 @@ class format_kickstart_test extends advanced_testcase {
         $template->title = '';
         $template->description = '';
         $template->description_format = '';
-
         $template->id = $DB->insert_record('format_kickstart_template', $template);
 
         $fs = get_file_storage();
