@@ -34,7 +34,7 @@ Feature: Check the kickstart course format features.
     And I should see "Template successfully edited"
     Then I should see "Demo template 1" in the "#templates_r0" "css_element"
     And I click on "#templates_r0 .singlebutton:nth-child(2)" "css_element" in the "Demo template 1" "table_row"
-    Then the field "Title" matches value "Demo template 1"
+    #Then the field "Title" matches value "Demo template 1"
     And I press "Delete"
     And I should see "Template successfully deleted"
     And I log out
@@ -78,32 +78,28 @@ Feature: Check the kickstart course format features.
     Then I should see "Introduction"
     And I log out
 
-    @javascript
-    Scenario: Check the access to restrict template for free plugin.
-      Given I log in as "admin"
-      And I navigate to "Plugins > Course formats > Manage templates" in site administration
-      And I press "Create template"
-      And I set the following fields to these values:
-        | Title | Test template 1|
-      And I press "Save changes"
-      And I should see "Template successfully created"
-      And I press "Create template"
-      And I set the following fields to these values:
-        | Title | Test template 2|
-      And I press "Save changes"
-      And I press "Create template"
-      And I set the following fields to these values:
-        | Title | Test template 3|
-      And I press "Save changes"
-      And I press "Create template"
-      And I set the following fields to these values:
-        | Title | Test template 4|
-      And I press "Save changes"
-      And I should see "You are using the maximum number (4) of templates allowed in Kickstart free edition."
-      And I press "Create template"
-      And I should see "Buy Kickstart Pro"
-      And I log out
-    
-    
-
-  
+  @javascript
+  Scenario: Check the access to restrict template for free plugin.
+    Given I log in as "admin"
+    And I navigate to "Plugins > Course formats > Manage templates" in site administration
+    And I press "Create template"
+    And I set the following fields to these values:
+      | Title | Test template 1|
+    And I press "Save changes"
+    And I should see "Template successfully created"
+    And I press "Create template"
+    And I set the following fields to these values:
+      | Title | Test template 2|
+    And I press "Save changes"
+    And I press "Create template"
+    And I set the following fields to these values:
+      | Title | Test template 3|
+    And I press "Save changes"
+    And I press "Create template"
+    And I set the following fields to these values:
+      | Title | Test template 4|
+    And I press "Save changes"
+    And I should see "You are using the maximum number (4) of templates allowed in Kickstart free edition."
+    And I press "Create template"
+    And I should see "Buy Kickstart Pro"
+    And I log out
