@@ -40,6 +40,7 @@ class format_kickstart_test extends advanced_testcase {
      */
     public function setup(): void {
         $this->setAdminUser();
+        $this->resetAfterTest(true);
     }
 
     /**
@@ -47,8 +48,6 @@ class format_kickstart_test extends advanced_testcase {
      */
     public function test_importing() {
         global $DB, $CFG;
-
-        $this->resetAfterTest(true);
         $course = $this->getDataGenerator()->create_course([
             'startdate' => 1000,
             'enddate' => 1000,
@@ -72,9 +71,9 @@ class format_kickstart_test extends advanced_testcase {
             'filearea'  => 'course_backups',
             'itemid'    => $template->id,
             'filepath'  => '/',
-            'filename'  => 'course.mbz'];
+            'filename'  => 'course-10-online.mbz'];
 
-        $fs->create_file_from_pathname($fileinfo, $CFG->dirroot . '/course/format/kickstart/tests/course.mbz');
+        $fs->create_file_from_pathname($fileinfo, $CFG->dirroot . '/course/format/kickstart/tests/course-10-online.mbz');
 
         \format_kickstart\course_importer::import_from_template($template->id, $course->id);
 
