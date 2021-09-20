@@ -45,7 +45,7 @@ Feature: Check the kickstart course format features.
     And I navigate to "Courses > Course default settings" in site administration
     And I set the following fields to these values:
       | Format | Kickstart format|
-    And I press "Save changes" 
+    And I press "Save changes"
     Then I navigate to "Plugins > Course formats > Manage templates" in site administration
     And I press "Create template"
     And I set the following fields to these values:
