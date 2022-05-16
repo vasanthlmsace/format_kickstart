@@ -34,15 +34,19 @@
     };
 
     Formatkickstart.prototype.confirmform = ".buttons .singlebutton form";
+
     Formatkickstart.prototype.confirmbutton = ".buttons .singlebutton form button";
+
     Formatkickstart.prototype.loadiconElement = "#modal-footer span#load-action";
 
     Formatkickstart.prototype.importInstrctions = function() {
-        var buttons = document.querySelectorAll(this.confirmbutton);
-        for (let $i in buttons) {
-            buttons[$i].disabled = true;
+        if (this.confirmbutton) {
+            var buttons = document.querySelectorAll(this.confirmbutton);
+            for (let $i in buttons) {
+                buttons[$i].disabled = true;
+            }
+            Loadingicon.addIconToContainer(this.loadiconElement);
         }
-        Loadingicon.addIconToContainer(this.loadiconElement);
     };
 
     return {

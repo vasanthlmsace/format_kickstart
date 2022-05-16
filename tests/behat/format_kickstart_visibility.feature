@@ -63,6 +63,7 @@ Feature: Check the kickstart course format features.
     Then I log in as "coursecreator1"
     And I am on course index
     And I follow "Cat 1"
+    And I click on "More" "button"
     Then I should see "Add a new course"
     And I press "Add a new course"
     And I set the following fields to these values:

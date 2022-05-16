@@ -21,8 +21,7 @@
  * @copyright  2021 bdecent gmbh <https://bdecent.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
+namespace format_kickstart;
 
 /**
  * Test kickstart course format.
@@ -32,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2021 bdecent gmbh <https://bdecent.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_kickstart_test extends advanced_testcase {
+class format_kickstart_test extends \advanced_testcase {
     /**
      * Set the admin user as User.
      *
