@@ -44,7 +44,7 @@ class format_kickstart_test extends \advanced_testcase {
 
     /**
      * Testing the import template in the course.
-     * @covers course_importer::import_from_template
+     * @covers ::import_from_template
      */
     public function test_importing() {
         global $DB, $CFG;
