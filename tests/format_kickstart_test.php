@@ -44,6 +44,7 @@ class format_kickstart_test extends \advanced_testcase {
 
     /**
      * Testing the import template in the course.
+     * @covers course_importer::import_from_template
      */
     public function test_importing() {
         global $DB, $CFG;
@@ -101,7 +102,7 @@ class format_kickstart_test extends \advanced_testcase {
 
     /**
      * Case to test the external method to create template.
-     *
+     * @covers ::format_kickstart_create_template
      * @return void
      */
     public function test_create_template() {
@@ -115,6 +116,7 @@ class format_kickstart_test extends \advanced_testcase {
 
     /**
      * Case to check the availablity of kickstart pro.
+     * @covers ::format_kickstart_has_pro
      */
     public function test_check_kickstart_has_pro() {
         $pluginman = \core_plugin_manager::instance();

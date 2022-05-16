@@ -65,7 +65,7 @@ Feature: Check the kickstart course format features.
     And I follow "Cat 1"
     And I click on "More" "button"
     Then I should see "Add a new course"
-    And I press "Add a new course"
+    And I click on "Add a new course" "link"
     And I set the following fields to these values:
       | Course full name | Test course 1|
       | Course short name | Test course 1|
