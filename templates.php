@@ -36,7 +36,7 @@ $templateid = optional_param('template', '', PARAM_TEXT);
 $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/course/format/kickstart/templates.php'));
-$templates = $CFG->kickstart_templates ? explode(",", $CFG->kickstart_templates) : [];
+$templates = isset($CFG->kickstart_templates) ? explode(",", $CFG->kickstart_templates) : [];
 // Template sort action.
 if ($action && $templateid) {
 

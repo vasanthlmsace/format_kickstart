@@ -19,7 +19,7 @@ Feature: Check the kickstart course format features.
       | coursecreator1 | coursecreator       | Category     | CAT1      |
       | coursecreator1 | coursecreator       | Category     | CAT2      |
 
-  @javascript @_cross_browser
+  @javascript
   Scenario: Check the template actions.
     # Admin view.
     Given I log in as "admin"

@@ -146,7 +146,9 @@ class template_table extends \table_sql {
      */
     public function query_db($pagesize, $useinitialsbar = true) {
         global $DB, $CFG;
-
+        if (!isset($CFG->kickstart_templates)) {
+            set_config('kickstart_templates', '');
+        }
         list($wsql, $params) = $this->get_sql_where();
         if ($wsql) {
             $wsql = 'AND ' . $wsql;
@@ -154,18 +156,16 @@ class template_table extends \table_sql {
         $sql = 'SELECT *
                 FROM {format_kickstart_template} t
                 '.$wsql;
-
         $sort = $this->get_sql_sort();
         if ($sort) {
             $sql = $sql . ' ORDER BY ' . $sort;
         } else if (format_kickstart_has_pro()) {
-            if ($CFG->kickstart_templates) {
+            if (!empty($CFG->kickstart_templates)) {
                 $orders = explode(",", $CFG->kickstart_templates);
                 array_unshift($orders, 'id');
                 $sql = $sql . 'ORDER BY FIELD ('. implode(",", $orders) . ')';
             }
         }
-
         if ($pagesize != -1) {
             $total = $DB->count_records('format_kickstart_template');
             $this->pagesize($pagesize, $total);

@@ -37,7 +37,10 @@ $PAGE->navbar->add(get_string('manage_templates', 'format_kickstart'), new moodl
 
 require_login();
 require_capability('format/kickstart:manage_templates', $context);
-$templates = $CFG->kickstart_templates ? explode(",", $CFG->kickstart_templates) : [];
+$templates = [];
+if (isset($CFG->kickstart_templates) && $CFG->kickstart_templates) {
+   $templates = explode(",", $CFG->kickstart_templates);
+}
 $templatesflip = array_flip($templates);
 switch ($action) {
     case 'create':

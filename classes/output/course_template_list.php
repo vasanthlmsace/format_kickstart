@@ -92,7 +92,10 @@ class course_template_list implements \templatable, \renderable {
         $templates = [];
         $listtemplates = [];
         if (format_kickstart_has_pro()) {
-            $listtemplates = $DB->get_records('format_kickstart_template', null, 'sort');
+            $orders = explode(",", $CFG->kickstart_templates);
+            array_unshift($orders, 'id');
+            $sort = "FIELD (". implode(",", $orders). ")";
+            $listtemplates = $DB->get_records('format_kickstart_template', null, $sort);
         } else {
             $listtemplates = $DB->get_records('format_kickstart_template');
         }

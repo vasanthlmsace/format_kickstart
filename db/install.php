@@ -32,12 +32,15 @@ function xmldb_format_kickstart_install() {
     if (method_exists('core_plugin_manager', 'reset_caches')) {
         core_plugin_manager::reset_caches();
     }
-
-    $file = $CFG->dirroot.'/course/format/kickstart/createtemplates.php';
-    if (file_exists($file)) {
-        require_once($file);
-        // Install templates automatically.
-        install_templates();
+    if (!defined('BEHAT_SITE_RUNNING')) {
+        $file = $CFG->dirroot.'/course/format/kickstart/createtemplates.php';
+        if (file_exists($file)) {
+            require_once($file);
+            // Install templates automatically.
+            install_templates();
+        }
+    } else {
+        set_config('kickstart_templates', '');
     }
     return true;
 }
