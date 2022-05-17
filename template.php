@@ -39,7 +39,7 @@ require_login();
 require_capability('format/kickstart:manage_templates', $context);
 $templates = [];
 if (isset($CFG->kickstart_templates) && $CFG->kickstart_templates) {
-   $templates = explode(",", $CFG->kickstart_templates);
+    $templates = explode(",", $CFG->kickstart_templates);
 }
 $templatesflip = array_flip($templates);
 switch ($action) {
