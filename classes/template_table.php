@@ -146,22 +146,20 @@ class template_table extends \table_sql {
      */
     public function query_db($pagesize, $useinitialsbar = true) {
         global $DB, $CFG;
-        if (!isset($CFG->kickstart_templates)) {
-            set_config('kickstart_templates', '');
-        }
         list($wsql, $params) = $this->get_sql_where();
         if ($wsql) {
             $wsql = 'AND ' . $wsql;
         }
         $sql = 'SELECT *
                 FROM {format_kickstart_template} t
-                '.$wsql;
+                WHERE t.visible = 1 '.$wsql;
         $sort = $this->get_sql_sort();
         if ($sort) {
             $sql = $sql . ' ORDER BY ' . $sort;
         } else if (format_kickstart_has_pro()) {
             if (!empty($CFG->kickstart_templates)) {
                 $orders = explode(",", $CFG->kickstart_templates);
+                $orders = array_filter(array_unique($orders), 'strlen');
                 array_unshift($orders, 'id');
                 $sql = $sql . 'ORDER BY FIELD ('. implode(",", $orders) . ')';
             }
@@ -176,7 +174,6 @@ class template_table extends \table_sql {
         if ($useinitialsbar && !$this->is_downloading()) {
             $this->initialbars(true);
         }
-
         $this->rawdata = $DB->get_recordset_sql($sql, $params, $this->get_page_start(), $this->get_page_size());
     }
 }

@@ -15,18 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details
+ * format kickstart plugin uninstallation.
  *
  * @package    format_kickstart
- * @copyright  2021 bdecent gmbh <https://bdecent.de>
+ * @copyright  bdecent GmbH 2021
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version   = 2023030102;         // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2022041900;         // Requires this Moodle version.
-$plugin->release = 'Version 1.2';
-$plugin->component = 'format_kickstart'; // Full name of the plugin (used for diagnostics).
-$plugin->supported = [40, 40];
-$plugin->maturity  = MATURITY_STABLE;
+/**
+ * Uninstall script for format_kickstart
+ * @return void
+ */
+function xmldb_format_kickstart_uninstall() {
+    global $DB, $SITE;
+    $DB->delete_records_select(
+        'course_format_options',
+        "courseid = :siteid AND format != :site",
+        array("siteid" => $SITE->id, 'site' => 'site')
+    );
+    unset_config('kickstart_templates');
+    return true;
+}

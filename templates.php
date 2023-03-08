@@ -36,6 +36,8 @@ $templateid = optional_param('template', '', PARAM_TEXT);
 $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/course/format/kickstart/templates.php'));
+// Check the template add or not.
+format_kickstart_check_format_template();
 $templates = isset($CFG->kickstart_templates) ? explode(",", $CFG->kickstart_templates) : [];
 // Template sort action.
 if ($action && $templateid) {
@@ -80,7 +82,7 @@ $PAGE->set_heading(get_string('manage_templates', 'format_kickstart'));
 $PAGE->set_button($OUTPUT->single_button(new moodle_url('/course/format/kickstart/template.php', ['action' => 'create']),
     get_string('create_template', 'format_kickstart')));
 
-if (!format_kickstart_has_pro() && $DB->count_records('format_kickstart_template') >= 2 * 2) {
+if (!format_kickstart_has_pro() && $DB->count_records('format_kickstart_template', array('courseformat' => 0)) >= 2 * 2) {
     \core\notification::warning(get_string('buypromaxtemplates', 'format_kickstart'));
 }
 

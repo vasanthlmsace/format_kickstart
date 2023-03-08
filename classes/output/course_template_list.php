@@ -93,12 +93,14 @@ class course_template_list implements \templatable, \renderable {
         $listtemplates = [];
         if (format_kickstart_has_pro()) {
             $orders = explode(",", $CFG->kickstart_templates);
+            $orders = array_filter(array_unique($orders), 'strlen');
             array_unshift($orders, 'id');
             $sort = "FIELD (". implode(",", $orders). ")";
-            $listtemplates = $DB->get_records('format_kickstart_template', null, $sort);
+            $listtemplates = $DB->get_records('format_kickstart_template', ['visible' => 1], $sort);
         } else {
-            $listtemplates = $DB->get_records('format_kickstart_template');
+            $listtemplates = $DB->get_records('format_kickstart_template', ['visible' => 1]);
         }
+        $templatecount = 0;
         if (!empty($listtemplates)) {
             foreach ($listtemplates as $template) {
                 // Apply template access if pro is installed.
@@ -136,11 +138,21 @@ class course_template_list implements \templatable, \renderable {
                     'template_id' => $template->id,
                     'course_id' => $COURSE->id
                 ]);
-
-                if ($limit > 0 && count($templates) >= $limit) {
+                if (!$template->courseformat) {
+                    $templatecount++;
+                }
+                if ($limit > 0 && $templatecount >= $limit) {
                     break;
                 }
-
+                if (format_kickstart_has_pro()) {
+                    require_once($CFG->dirroot."/local/kickstart_pro/lib.php");
+                    if (function_exists('local_kickstart_pro_get_template_backimages')) {
+                        $template->isbackimages = true;
+                        $template->backimages = local_kickstart_pro_get_template_backimages($template->id);
+                        $template->showimageindicators = !empty($template->backimages) && count($template->backimages)
+                            > 1 ? true : false;
+                    }
+                }
                 $templates[] = $template;
             }
         }
@@ -157,7 +169,6 @@ class course_template_list implements \templatable, \renderable {
      * @throws \moodle_exception
      */
     public function export_for_template(renderer_base $output) {
-
         $templates = $this->get_templates();
         if (!format_kickstart_has_pro() && is_siteadmin()) {
             $template = new \stdClass();
@@ -166,7 +177,6 @@ class course_template_list implements \templatable, \renderable {
             $template->link = 'https://bdecent.de/kickstart/';
             $templates[] = $template;
         }
-
         return [
             'templates' => ['groups' => $this->get_groups($templates)],
             'has_pro' => format_kickstart_has_pro(),

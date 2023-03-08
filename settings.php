@@ -31,6 +31,7 @@ require_once("$CFG->dirroot/backup/util/includes/backup_includes.php");
 
 if ($ADMIN->fulltree) {
     if (format_kickstart_has_pro()) {
+        require_once($CFG->dirroot."/local/kickstart_pro/lib.php");
         $settings->add(new admin_setting_configcheckbox('format_kickstart/coursecreatorredirect',
             get_string('coursecreatorredirect', 'format_kickstart'),
             get_string('coursecreatorredirect_desc', 'format_kickstart'),
@@ -45,6 +46,17 @@ if ($ADMIN->fulltree) {
             get_string('automatictemplate', 'format_kickstart'),
             get_string('automatictemplate_desc', 'format_kickstart'),
             1));
+        if (function_exists('local_kickstart_pro_get_template_backimages')) {
+            $templatebgoptions = array('maxfiles' => 10, 'subdirs' => 0, 'accepted_types' => ['.jpg', '.png']);
+            $settings->add(new admin_setting_configstoredfile(
+                'format_kickstart/templatebackimages',
+                get_string('default_templatebackground', 'format_kickstart'),
+                get_string('default_templatebackground_desc', 'format_kickstart'),
+                'templatebackimages',
+                0,
+                $templatebgoptions
+            ));
+        }
     }
 
     $settings->add(new admin_setting_configselect('format_kickstart/importtarget',
