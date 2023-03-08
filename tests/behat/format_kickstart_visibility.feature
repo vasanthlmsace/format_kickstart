@@ -51,7 +51,6 @@ Feature: Check the kickstart course format features.
     And I should see "Template successfully deleted"
     And I log out
 
-
   Scenario: Check the import template format kickstart.
     Given I log in as "admin"
     And I navigate to "Courses > Course default settings" in site administration
@@ -188,5 +187,3 @@ Feature: Check the kickstart course format features.
     And I click kickstart template ".use-template[data-templatename=\"Single activity format\"]"
     And I click on "Import" "button" in the ".modal" "css_element"
     And I should see "Example page1 content"
-
-

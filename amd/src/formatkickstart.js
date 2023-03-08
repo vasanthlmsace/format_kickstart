@@ -25,6 +25,8 @@
 
     /**
      * Controls kicstart javascript.
+     * @param {int} $contextid
+     * @param {int} $courseid
     */
     var Formatkickstart = function(contextid, courseid) {
         var self = this;
@@ -82,7 +84,7 @@
                 });
             }
         );
-    }
+    };
 
     return {
         init: function(contextid, courseid) {

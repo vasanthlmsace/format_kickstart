@@ -27,7 +27,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="kickstart_format_options" COMMENT="Stores format-specific options for the course or course section">
+    <TABLE NAME="format_kickstart_options" COMMENT="Stores format-specific options for the course or course section">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="templateid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Id of the course"/>

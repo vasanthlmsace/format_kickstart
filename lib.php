@@ -414,7 +414,7 @@ function format_kickstart_update_template_format_options($template) {
             $courseformat = strtolower($template->title);
         }
         foreach ($records as $record) {
-            if (!$existrecord = $DB->get_record('kickstart_format_options', ['format' => $courseformat,
+            if (!$existrecord = $DB->get_record('format_kickstart_options', ['format' => $courseformat,
                 'templateid' => $template->id, 'name' => $record->name])) {
                 $data = new stdClass();
                 $data->templateid = $template->id;
@@ -425,14 +425,14 @@ function format_kickstart_update_template_format_options($template) {
                 if ($isdesignerformat && $record->name == 'coursetype') {
                     $data->value = $coursetype;
                 }
-                $DB->insert_record('kickstart_format_options', $data);
+                $DB->insert_record('format_kickstart_options', $data);
             } else {
                 if ($isdesignerformat && $record->name == 'coursetype') {
                     $record->value = $coursetype;
                 }
                 if ($existrecord->value != $record->value) {
                     $existrecord->value = $record->value;
-                    $DB->update_record('kickstart_format_options', $existrecord);
+                    $DB->update_record('format_kickstart_options', $existrecord);
                 }
             }
         }
@@ -450,7 +450,7 @@ function format_kickstart_get_template_format_options($template) {
     if ($template->format == 'designer') {
         $courseformat = strtolower($template->title);
     }
-    $records = $DB->get_records_menu('kickstart_format_options',
+    $records = $DB->get_records_menu('format_kickstart_options',
         array(
             'templateid' => $template->id,
             'format' => $courseformat
@@ -524,7 +524,7 @@ function format_kickstart_remove_kickstart_templates($templateid) {
     $fs->delete_area_files($context->id, 'format_kickstart', 'course_backups', $templateid);
     $template = $DB->get_record('format_kickstart_template', ['id' => $templateid]);
     if ($template->courseformat) {
-        $DB->delete_records('kickstart_format_options', ['templateid' => $templateid]);
+        $DB->delete_records('format_kickstart_options', ['templateid' => $templateid]);
         $DB->delete_records('course_format_options', ['courseid' => $SITE->id, 'format' => $template->format]);
     }
     $DB->delete_records('format_kickstart_template', ['id' => $templateid]);

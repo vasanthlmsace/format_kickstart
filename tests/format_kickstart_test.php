@@ -70,10 +70,10 @@ class format_kickstart_test extends \advanced_testcase {
         $fileinfo = [
             'contextid' => \context_system::instance()->id,
             'component' => 'format_kickstart',
-            'filearea'  => 'course_backups',
-            'itemid'    => $template->id,
-            'filepath'  => '/',
-            'filename'  => 'course-10-online.mbz'];
+            'filearea' => 'course_backups',
+            'itemid' => $template->id,
+            'filepath' => '/',
+            'filename' => 'course-10-online.mbz'];
 
         $fs->create_file_from_pathname($fileinfo, $CFG->dirroot . '/course/format/kickstart/tests/course-10-online.mbz');
 
@@ -177,9 +177,9 @@ class format_kickstart_test extends \advanced_testcase {
         $this->create_kickstart_template_options();
         $format = 'topics';
         $template = $DB->get_record('format_kickstart_template', array('format' => $format, 'courseformat' => 1));
-        $this->assertTrue($DB->record_exists('kickstart_format_options', array('format' => $format,
+        $this->assertTrue($DB->record_exists('format_kickstart_options', array('format' => $format,
             'templateid' => $template->id, 'name' => 'hiddensections')));
-        $this->assertTrue($DB->record_exists('kickstart_format_options', array('format' => $format,
+        $this->assertTrue($DB->record_exists('format_kickstart_options', array('format' => $format,
             'templateid' => $template->id, 'name' => 'coursedisplay')));
     }
 
@@ -203,6 +203,7 @@ class format_kickstart_test extends \advanced_testcase {
 
     /**
      * Case to check the get template options.
+     * @covers ::format_kickstart_update_template_format_options
      * @return void
      */
     public function test_format_kickstart_get_template_format_options() {
@@ -217,6 +218,7 @@ class format_kickstart_test extends \advanced_testcase {
 
     /**
      * Case to check the remove kickstart template.
+     * @covers ::format_kickstart_remove_kickstart_templates
      * @return void
      */
     public function test_format_kickstart_remove_kickstart_templates() {

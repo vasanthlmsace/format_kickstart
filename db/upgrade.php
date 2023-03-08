@@ -198,10 +198,10 @@ function xmldb_format_kickstart_upgrade($oldversion) {
 
     // Create kickstart format options table if not exist.
     if ($oldversion < 2023030101) {
-        // Define table kickstart_format_options to be created.
-        $table = new xmldb_table('kickstart_format_options');
+        // Define table format_kickstart_options to be created.
+        $table = new xmldb_table('format_kickstart_options');
 
-        // Adding fields to table kickstart_format_options.
+        // Adding fields to table format_kickstart_options.
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
         $table->add_field('templateid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('displayname', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
@@ -210,10 +210,10 @@ function xmldb_format_kickstart_upgrade($oldversion) {
         $table->add_field('name', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
         $table->add_field('value', XMLDB_TYPE_TEXT, null, null, null, null, null);
 
-        // Adding keys to table kickstart_format_options.
+        // Adding keys to table format_kickstart_options.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
-        // Conditionally launch create table for kickstart_format_options.
+        // Conditionally launch create table for format_kickstart_options.
         if (!$dbman->table_exists($table)) {
             $dbman->create_table($table);
         }

@@ -92,7 +92,7 @@ class course_importer {
                     $data->format = $template->format;
                     $data->name = 'coursetype';
                     $data->value = $coursetype;
-                    $DB->insert_record('kickstart_format_options', $data);
+                    $DB->insert_record('format_kickstart_options', $data);
                 }
             }
             $data = array_merge($course, $formatoptions);
