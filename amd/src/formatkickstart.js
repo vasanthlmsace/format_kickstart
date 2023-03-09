@@ -20,8 +20,8 @@
  * @copyright 2021, bdecent gmbh bdecent.de
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- define(['core/loadingicon', 'core/str', 'core/notification', 'core/config', 'core/ajax'],
- function(Loadingicon, str, notification, Config, Ajax) {
+ define(['core/str', 'core/notification', 'core/config', 'core/ajax'],
+ function(str, notification, Config, Ajax) {
 
     /**
      * Controls kicstart javascript.
