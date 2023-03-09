@@ -32,7 +32,7 @@ namespace format_kickstart;
  * @copyright  2021 bdecent gmbh <https://bdecent.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_kickstart_test extends advanced_testcase {
+class format_kickstart_test extends \advanced_testcase {
     /**
      * Set the admin user as User.
      *

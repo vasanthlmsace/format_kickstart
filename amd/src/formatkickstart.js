@@ -45,15 +45,15 @@
 
     Formatkickstart.prototype.loadiconElement = "#modal-footer span#load-action";
 
-    Formatkickstart.prototype.contextId = null;
-
     Formatkickstart.prototype.courseId = null;
 
-    Formatkickstart.prototype.templateHandler = function(event) {
+    Formatkickstart.prototype.contextId = null;
+
+    Formatkickstart.prototype.templateHandler = function(e) {
         var self = this;
-        event.preventDefault();
-        let templateName = event.target.getAttribute("data-templatename");
-        let templateId = event.target.getAttribute("data-template");
+        e.preventDefault();
+        let templateName = e.target.getAttribute("data-templatename");
+        let templateId = e.target.getAttribute("data-template");
         self.confirmImportTemplate(templateId, templateName);
     };
 
