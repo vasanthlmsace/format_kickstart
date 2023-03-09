@@ -25,8 +25,9 @@
 
     /**
      * Controls kicstart javascript.
-     * @param {int} $contextid
-     * @param {int} $courseid
+     * @param {int} contextid
+     * @param {int} courseid
+     * @return {void}
     */
     var Formatkickstart = function(contextid, courseid) {
         var self = this;
