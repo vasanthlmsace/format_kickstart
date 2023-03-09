@@ -23,8 +23,6 @@
 
 namespace format_kickstart\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Privacy Subsystem for format_kickstart implementing null_provider.
  *

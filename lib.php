@@ -453,7 +453,7 @@ function format_kickstart_get_template_format_options($template) {
     $params['format'] = $template->format;
     $params['id'] = '1';
     $courseformat = course_get_format((object) $params);
-    // Check course format has editor type
+    // Check course format has editor type.
     $iseditors = array_column($courseformat->course_format_options(), 'element_type');
     if (in_array('editor', $iseditors)) {
         $editors = array_keys($iseditors, 'editor');
@@ -480,14 +480,17 @@ function format_kickstart_check_format_template() {
             $enabledplug[] = $format->name;
         }
     }
-    $avaenableplug = array_unique($DB->get_records_menu('format_kickstart_template', array('courseformat' => 1, 'visible' => 0), '', 'id,format'));
-    $avadisableplug = array_unique($DB->get_records_menu('format_kickstart_template', array('courseformat' => 1, 'visible' => 1), '', 'id,format'));
+    $avaenableplug = array_unique($DB->get_records_menu('format_kickstart_template',
+        array('courseformat' => 1, 'visible' => 0), '', 'id,format'));
+    $avadisableplug = array_unique($DB->get_records_menu('format_kickstart_template',
+        array('courseformat' => 1, 'visible' => 1), '', 'id,format'));
     $enableplug = array_intersect($avaenableplug, $enabledplug);
     $disableplug = array_diff($avadisableplug, $enabledplug);
     // Disabled the plugins.
     if ($disableplug) {
         foreach ($disableplug as $format) {
-            $removetemplates = $DB->get_records_menu('format_kickstart_template', array('format' => $format, 'courseformat' => 1), '', 'id,id');
+            $removetemplates = $DB->get_records_menu('format_kickstart_template', array('format' => $format,
+                'courseformat' => 1), '', 'id,id');
             if ($removetemplates) {
                 $removetemplates = array_keys($removetemplates);
                 $templates = array_diff($templates, $removetemplates);
@@ -499,10 +502,11 @@ function format_kickstart_check_format_template() {
     // Enabled the plugins.
     if ($enableplug) {
         foreach ($enableplug as $format) {
-            $addtemplates = $DB->get_records_menu('format_kickstart_template', array('format' => $format, 'courseformat' => 1), '', 'id,id');
+            $addtemplates = $DB->get_records_menu('format_kickstart_template', array('format' => $format,
+                'courseformat' => 1), '', 'id,id');
             if ($addtemplates) {
                 $addtemplates = array_keys($addtemplates);
-                $templates = array_merge($templates,$addtemplates);
+                $templates = array_merge($templates, $addtemplates);
             }
             $DB->set_field('format_kickstart_template', 'visible', 1, array('format' => $format, 'courseformat' => 1));
         }

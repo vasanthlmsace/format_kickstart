@@ -163,7 +163,7 @@ Feature: Check the kickstart course format features.
   Scenario: Check the single activity format template
     Given I log in as "admin"
     And I am on "Course 3" course homepage with editing mode on
-    And I navigate to "Settings" in current page administration
+    And I navigate to "Edit settings" in current page administration
     And I set the following fields to these values:
       | format | kickstart |
     Then I press "Save and display"
@@ -180,7 +180,7 @@ Feature: Check the kickstart course format features.
       | Type of activity | Page |
     Then I press "Save changes"
     Then I am on "Course 3" course homepage
-    And I navigate to "Settings" in current page administration
+    And I navigate to "Edit settings" in current page administration
     And I set the following fields to these values:
       | format | kickstart |
     Then I press "Save and display"

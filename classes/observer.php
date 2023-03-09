@@ -24,9 +24,6 @@
  */
 namespace format_kickstart;
 
-defined('MOODLE_INTERNAL') || die();
-
-
 /**
  * Event observer class define.
  */

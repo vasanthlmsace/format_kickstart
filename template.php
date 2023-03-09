@@ -82,7 +82,7 @@ switch ($action) {
         } else if ($form->is_cancelled()) {
             redirect(new moodle_url('/course/format/kickstart/templates.php'));
         } else {
-			// Get global settings bg and set the images.
+            // Get global settings bg and set the images.
             if (format_kickstart_has_pro()) {
                 $template = new stdClass();
                 $templateoptions = array('maxfiles' => 10, 'subdirs' => 0, 'accepted_types' => ['.jpg', '.png']);
