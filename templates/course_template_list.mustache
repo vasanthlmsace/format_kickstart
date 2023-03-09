@@ -1,4 +1,4 @@
-{{!
+    {{!
     This file is part of Moodle - http://moodle.org/
 
     Moodle is free software: you can redistribute it and/or modify
@@ -51,17 +51,37 @@
 {{/notemplates}}
 {{#templates}}
     {{#groups}}
-        <div class="card-deck mb-2">
+        <div class="card-deck mb-2 templates-block">
             {{#templates}}
                 {{^isplaceholder}}
-                    <div class="card">
+                    <div class="card" data-templatename="{{title}}">
                         <div class="card-body">
+                            {{#isbackimages}}
+                            <div class="image-block">
+                                <div id="carousel-template-{{id}}" class="carousel slide" data-ride="carousel" data-interval="1000">
+                                    {{#showimageindicators}}
+                                    <ol class="carousel-indicators">
+                                        {{#backimages}}
+                                        <li data-target="#carousel-template-{{id}}" data-slide-to="{{pos}}" class="{{#active}} active{{/active}}"></li>
+                                        {{/backimages}}
+                                    </ol>
+                                    {{/showimageindicators}}
+                                    <div class="carousel-inner">
+                                        {{#backimages}}
+                                        <div class="carousel-item {{#active}}active{{/active}}">
+                                            <img class="d-block w-100" src="{{{image}}}">
+                                        </div>
+                                        {{/backimages}}
+                                    </div>
+                                  </div>
+                            </div>
+                            {{/isbackimages}}
                             <h5 class="card-title">{{title}}</h5>
                             <p class="card-text">{{{description_formatted}}}</p>
                             <small class="text-muted">{{hashtags}}</small>
                         </div>
                         <div class="card-footer">
-                            <a href="{{{link}}}" class="btn btn-primary">{{#str}}usetemplate, format_kickstart{{/str}}</a>
+                            <a href="{{{link}}}" data-template={{id}} data-templatename="{{title}}" class="btn btn-primary use-template">{{#str}}usetemplate, format_kickstart{{/str}}</a>
                             {{#preview_url}}
                                 <a href="{{preview_url}}" target="_blank" class="btn btn-outline-primary pull-right">{{#str}}preview{{/str}}</a>
                             {{/preview_url}}

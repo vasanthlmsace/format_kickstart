@@ -31,10 +31,11 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_format_kickstart_install() {
     global $CFG;
 
+    require_once($CFG->dirroot. "/course/format/kickstart/lib.php");
     if (method_exists('core_plugin_manager', 'reset_caches')) {
         core_plugin_manager::reset_caches();
     }
-
+    format_kickstart_import_courseformat_template();
     $file = $CFG->dirroot.'/course/format/kickstart/createtemplates.php';
     if (file_exists($file)) {
         require_once($file);
