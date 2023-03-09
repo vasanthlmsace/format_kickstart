@@ -160,9 +160,15 @@ class template_table extends \table_sql {
             if (!empty($CFG->kickstart_templates)) {
                 $orders = explode(",", $CFG->kickstart_templates);
                 $orders = array_filter(array_unique($orders), 'strlen');
-                array_unshift($orders, 'id');
-                $sql = $sql . 'ORDER BY FIELD ('. implode(",", $orders) . ')';
+                if (!empty($orders)) {
+                    list($insql, $inparams) = $DB->get_in_or_equal($orders, SQL_PARAMS_NAMED);
+                    array_unshift($orders, 'id');
+                    $sql .= "AND ID $insql";
+                    $sql = $sql . 'ORDER BY FIELD ('. implode(",", $orders) . ')';
+                    $params += $inparams;
+                }
             }
+            //print_object($CFG->kickstart_templates);exit;
         }
         if ($pagesize != -1) {
             $total = $DB->count_records('format_kickstart_template');
