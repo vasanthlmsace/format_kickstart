@@ -94,9 +94,11 @@ class course_template_list implements \templatable, \renderable {
         if (format_kickstart_has_pro()) {
             $orders = explode(",", $CFG->kickstart_templates);
             $orders = array_filter(array_unique($orders), 'strlen');
-            array_unshift($orders, 'id');
-            $sort = "FIELD (". implode(",", $orders). ")";
-            $listtemplates = $DB->get_records('format_kickstart_template', ['visible' => 1], $sort);
+            $subquery = "(CASE " . implode(" ", array_map(function ($value) use ($orders) {
+                return "WHEN id = $value THEN " . array_search($value, $orders);
+            }, $orders)) . " END)";
+            $sql = "SELECT * FROM {format_kickstart_template} WHERE visible = 1 ORDER BY $subquery";
+            $listtemplates = $DB->get_records_sql($sql);
         } else {
             $listtemplates = $DB->get_records('format_kickstart_template', ['visible' => 1]);
         }
