@@ -45,6 +45,7 @@ if ($ADMIN->fulltree) {
             get_string('automatictemplate', 'format_kickstart'),
             get_string('automatictemplate_desc', 'format_kickstart'),
             1));
+        require_once($CFG->dirroot. "/local/kickstart_pro/lib.php");
         if (function_exists('local_kickstart_pro_get_template_backimages')) {
             $templatebgoptions = array('maxfiles' => 10, 'subdirs' => 0, 'accepted_types' => ['.jpg', '.png']);
             $settings->add(new admin_setting_configstoredfile(
