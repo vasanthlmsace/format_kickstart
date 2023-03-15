@@ -107,3 +107,10 @@ $string['templatebackimg_help'] = "Allow uploading images to a template.";
 $string['default_templatebackground'] = "Default templates background images";
 $string['default_templatebackground_desc'] = "";
 $string['courseformatoptions'] = "Course format";
+$string['templatesview'] = "Templates view";
+$string['templatesview_help'] = "Templates displayed to tiles or list view";
+$string['strtile'] = "Tile";
+$string['strlist'] = "List";
+$string['defaulttemplatesview'] = 'Default templates view';
+$string['defaulttemplatesview_desc'] = 'Default templates displayed to tiles or list view.';
+

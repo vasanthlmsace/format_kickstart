@@ -151,8 +151,8 @@ class course_template_list implements \templatable, \renderable {
                 if (format_kickstart_has_pro()) {
                     require_once($CFG->dirroot."/local/kickstart_pro/lib.php");
                     if (function_exists('local_kickstart_pro_get_template_backimages')) {
-                        $template->isbackimages = true;
                         $template->backimages = local_kickstart_pro_get_template_backimages($template->id);
+                        $template->isbackimages = count($template->backimages);
                         $template->showimageindicators = !empty($template->backimages) && count($template->backimages)
                             > 1 ? true : false;
                     }
@@ -189,6 +189,7 @@ class course_template_list implements \templatable, \renderable {
             'has_pro' => format_kickstart_has_pro(),
             'teacherinstructions' => format_text($this->course->teacherinstructions['text'],
                 $this->course->teacherinstructions['format']),
+            'templateclass' => ($this->course->templatesview == 'list') ? 'kickstart-list-view' : 'kickstart-tile-view',
             'notemplates' => empty($templates),
             'canmanage' => has_capability('format/kickstart:manage_templates', \context_system::instance()),
             'createtemplateurl' => new \moodle_url('/course/format/kickstart/template.php', ['action' => 'create']),

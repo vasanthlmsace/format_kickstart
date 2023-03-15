@@ -38,7 +38,7 @@ $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/course/format/kickstart/templates.php'));
 // Check the template add or not.
 format_kickstart_check_format_template();
-$templates = $CFG->kickstart_templates ? explode(",", $CFG->kickstart_templates) : [];
+$templates = isset($CFG->kickstart_templates) ? explode(",", $CFG->kickstart_templates) : [];
 $templates = array_values(array_filter(array_unique($templates), 'strlen'));
 // Template sort action.
 if ($action && $templateid) {

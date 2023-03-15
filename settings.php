@@ -67,6 +67,14 @@ if ($ADMIN->fulltree) {
             \backup::TARGET_EXISTING_ADDING => get_string('restoretoexistingcourseadding', 'format_kickstart')
         ]));
 
+    $settings->add(new admin_setting_configselect('format_kickstart/defaulttemplatesview',
+        get_string('defaulttemplatesview', 'format_kickstart'),
+        get_string('defaulttemplatesview_desc', 'format_kickstart'),
+        'tile', [
+            'tile' => get_string('strtile', 'format_kickstart'),
+            'list' => get_string('strlist', 'format_kickstart')
+        ]));
+
     $settings->add(new admin_setting_confightmleditor('format_kickstart/defaultuserinstructions',
         get_string('defaultuserinstructions', 'format_kickstart'),
         get_string('defaultuserinstructions_desc', 'format_kickstart'),
