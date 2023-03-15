@@ -62,6 +62,20 @@ class format_kickstart extends core_courseformat\base {
             $defaultuserinstructions = get_config('format_kickstart', 'defaultuserinstructions');
             $defaultteacherinstructions = get_config('format_kickstart', 'defaultteacherinstructions');
             $courseformatoptions = [
+                'templatesview' => [
+                    'label' => new lang_string('templatesview', 'format_kickstart'),
+                    'help' => 'templatesview',
+                    'help_component' => 'format_kickstart',
+                    'type' => PARAM_TEXT,
+                    'element_type' => 'select',
+                    'element_attributes' => [
+                        [
+                            'tile' => new lang_string('strtile', 'format_kickstart'),
+                            'list' => new lang_string('strlist', 'format_kickstart')
+                        ],
+                    ],
+                    'default' => get_config('format_kickstart', 'defaulttemplatesview'),
+                ],
                 'userinstructions' => [
                     'label' => new lang_string('userinstructions', 'format_kickstart'),
                     'help' => 'userinstructions',
