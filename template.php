@@ -60,9 +60,9 @@ switch ($action) {
             $data->description = $data->description['text'];
             $counttemplate = $DB->count_records("format_kickstart_template");
             if (format_kickstart_has_pro()) {
-                $data->cohortids = json_encode($data->cohortids);
-                $data->categoryids = json_encode($data->categoryids);
-                $data->roleids = json_encode($data->roleids);
+                $data->cohortids = isset($data->cohortids) ? json_encode($data->cohortids) : '';
+                $data->categoryids = isset($data->categoryids) ? json_encode($data->categoryids) : '';
+                $data->roleids = isset($data->roleids) ? json_encode($data->roleids) : '';
             }
             $data->sort = (!empty($counttemplate)) ? $counttemplate + 1 : 1;
             $data->courseformat = 0;
@@ -73,7 +73,7 @@ switch ($action) {
                 context_system::instance(), $data->tags);
             file_save_draft_area_files($data->course_backup, $context->id, 'format_kickstart', 'course_backups',
                 $id, ['subdirs' => 0, 'maxfiles' => 1]);
-            if (format_kickstart_has_pro()) {
+            if (format_kickstart_has_pro() && function_exists('local_kickstart_pro_get_template_backimages')) {
                 file_save_draft_area_files($data->templatebackimg, $context->id, 'local_kickstart_pro', 'templatebackimg',
                 $id, $templatebgoptions);
             }
@@ -82,13 +82,13 @@ switch ($action) {
         } else if ($form->is_cancelled()) {
             redirect(new moodle_url('/course/format/kickstart/templates.php'));
         } else {
-            // Get global settings bg and set the images.
-            if (format_kickstart_has_pro()) {
+			// Get global settings bg and set the images.
+            if (format_kickstart_has_pro() && function_exists('local_kickstart_pro_get_template_backimages')) {
                 $template = new stdClass();
                 $templateoptions = array('maxfiles' => 10, 'subdirs' => 0, 'accepted_types' => ['.jpg', '.png']);
                 $draftitem = file_get_submitted_draft_itemid('templatebackimages');
-                file_prepare_draft_area($draftitem, \context_system::instance()->id,
-                    'format_kickstart', 'templatebackimages', 0, $templateoptions);
+                file_prepare_draft_area($draftitem, \context_system::instance()->id, 'format_kickstart',
+                    'templatebackimages', 0, $templateoptions);
                 $template->templatebackimg = $draftitem;
                 $form->set_data($template);
             }
@@ -120,9 +120,9 @@ switch ($action) {
                 $data->description_format = $data->description['format'];
                 $data->description = $data->description['text'];
                 if (format_kickstart_has_pro()) {
-                    $data->cohortids = json_encode($data->cohortids);
-                    $data->categoryids = json_encode($data->categoryids);
-                    $data->roleids = json_encode($data->roleids);
+                    $data->cohortids = isset($data->cohortids) ? json_encode($data->cohortids) : '';
+                    $data->categoryids = isset($data->categoryids) ? json_encode($data->categoryids) : '';
+                    $data->roleids = isset($data->roleids) ? json_encode($data->roleids) : '';
                 }
                 $DB->update_record('format_kickstart_template', $data);
                 core_tag_tag::set_item_tags('format_kickstart', 'format_kickstart_template', $id,
@@ -172,11 +172,12 @@ switch ($action) {
                 if ($params['format'] == 'designer') {
                     require_once($CFG->dirroot."/course/format/designer/lib.php");
                     $coursetypes = format_kickstart_get_designer_coursetypes();
-                    $records['coursetype'] = array_search($template->title, $coursetypes);
+                    $records['designercoursetype'] = array_search($template->title, $coursetypes);
                 }
                 $form->set_data($records);
             }
         }
+
         break;
 
     case 'delete':

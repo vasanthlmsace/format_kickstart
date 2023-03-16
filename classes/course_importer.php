@@ -69,7 +69,7 @@ class course_importer {
             }
 
             $fp = get_file_packer('application/vnd.moodle.backup');
-            $backuptempdir = make_backup_temp_directory('template' . $templateid);
+            $backuptempdir = $CFG->tempdir . '/backup/' . 'template' . $templateid;
             $files[0]->extract_to_pathname($fp, $backuptempdir);
 
             self::import('template' . $templateid, $courseid);
@@ -82,16 +82,16 @@ class course_importer {
             $formatoptions = format_kickstart_get_template_format_options($template);
             // Check the coursetype exist or not If not set the designer type.
             if ($template->format == 'designer') {
-                if (empty($formatoptions) || !isset($formatoptions['coursetype'])) {
+                if (empty($formatoptions) || !isset($formatoptions['designercoursetype'])) {
                     require_once($CFG->dirroot."/course/format/designer/lib.php");
                     $coursetypes = format_kickstart_get_designer_coursetypes();
                     $coursetype = array_search($template->title, $coursetypes);
-                    $formatoptions['coursetype'] = $coursetype;
+                    $formatoptions['designercoursetype'] = $coursetype;
                     $data = new stdClass();
                     $data->templateid = $template->id;
                     $data->displayname = $template->title;
                     $data->format = $template->format;
-                    $data->name = 'coursetype';
+                    $data->name = 'designercoursetype';
                     $data->value = $coursetype;
                     $DB->insert_record('format_kickstart_options', $data);
                 }
@@ -124,7 +124,7 @@ class course_importer {
         ];
 
         if (get_config('format_kickstart', 'restore_general_users') < 2) {
-            $settings['users'] = (bool)get_config('format_kickstart', 'restore_general_users');
+            $settings['users'] = (bool) get_config('format_kickstart', 'restore_general_users');
         }
 
         if (get_config('format_kickstart', 'restore_replace_keep_roles_and_enrolments') < 2) {
@@ -142,7 +142,6 @@ class course_importer {
             $target = get_config('format_kickstart', 'importtarget') ?: \backup::TARGET_EXISTING_DELETING;
             $rc = new \restore_controller($backuptempdir, $course->id, \backup::INTERACTIVE_NO,
                 \backup::MODE_GENERAL, $USER->id, $target);
-
             foreach ($settings as $settingname => $value) {
                 $setting = $rc->get_plan()->get_setting($settingname);
                 if ($setting->get_status() == \base_setting::LOCKED_BY_PERMISSION) {
@@ -166,8 +165,10 @@ class course_importer {
             $timecreated = $course->timecreated;
             // Reload course.
             $course = $DB->get_record('course', ['id' => $courseid]);
-            $course->summary = $summary;
-            $course->summaryformat = $summaryformat;
+            if (!$target == \backup::TARGET_EXISTING_DELETING) {
+                $course->summary = $summary;
+                $course->summaryformat = $summaryformat;
+            }
             $course->enddate = $enddate;
             $course->timecreated = $timecreated;
             $DB->update_record('course', $course);

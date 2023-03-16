@@ -79,6 +79,12 @@ class template_form extends \moodleform {
                 $mform->addElement('hidden', 'idnumber');
                 $mform->setType('idnumber', PARAM_RAW);
             }
+            if ($template['format'] == 'singleactivity') {
+                $mform->addElement('select', 'category', get_string('coursecategory'), [], array('class' => 'd-none'));
+                $mform->addHelpButton('category', 'coursecategory');
+                $mform->setDefault('category', 1);
+                $mform->hideIf('category', 'title', 'noteq');
+            }
 
             $params['format'] = $template['format'];
             $params['id'] = '1';
@@ -123,6 +129,7 @@ class template_form extends \moodleform {
                     $mform->addHelpButton('templatebackimg', 'templatebackimg', 'format_kickstart');
                 }
 
+
                 $mform->addElement('header', 'templateaccess', get_string('templateaccess', 'format_kickstart'));
 
                 $mform->addElement('advcheckbox', 'restrictcohort', get_string('restrictcohort', 'format_kickstart'));
@@ -133,6 +140,7 @@ class template_form extends \moodleform {
                 foreach ($cohortdata['cohorts'] as $cohort) {
                     $options[$cohort->id] = $cohort->name;
                 }
+
                 $mform->addElement('autocomplete', 'cohortids', get_string('cohorts', 'cohort'), $options, [
                     'multiple' => true
                 ]);
@@ -142,7 +150,7 @@ class template_form extends \moodleform {
 
                 $mform->addElement('advcheckbox', 'restrictcategory', get_string('restrictcategory', 'format_kickstart'));
                 $mform->setType('restrictcategory', PARAM_BOOL);
-                $categories = \core_course_category::make_categories_list('moodle/course:create');
+                $categories = \coursecat::make_categories_list('moodle/course:create');
                 $mform->addElement('autocomplete', 'categoryids', get_string('categories'), $categories,
                     ['multiple' => true]);
                 $mform->hideIf('categoryids', 'restrictcategory');

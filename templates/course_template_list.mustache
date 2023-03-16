@@ -44,8 +44,8 @@
 {{{teacherinstructions}}}
 
 <hr>
-<h4 class="text-muted">{{#str}}course_templates, format_kickstart{{/str}}</h4>
 
+<h4 class="text-muted">{{#str}}course_templates, format_kickstart{{/str}}</h4>
 <div class="template-list {{templateclass}}">
     {{#notemplates}}
         <p class="alert alert-warning">{{#str}}notemplates, format_kickstart{{/str}}</p>
@@ -58,24 +58,24 @@
                         <div class="card" data-templatename="{{title}}">
                             <div class="card-body">
                                 {{#isbackimages}}
-                                <div class="image-block">
-                                    <div id="carousel-template-{{id}}" class="carousel slide" data-ride="carousel" data-interval="1000">
-                                        {{#showimageindicators}}
-                                        <ol class="carousel-indicators">
-                                            {{#backimages}}
-                                            <li data-target="#carousel-template-{{id}}" data-slide-to="{{pos}}" class="{{#active}} active{{/active}}"></li>
-                                            {{/backimages}}
-                                        </ol>
-                                        {{/showimageindicators}}
-                                        <div class="carousel-inner">
-                                            {{#backimages}}
-                                            <div class="carousel-item {{#active}}active{{/active}}">
-                                                <img class="d-block w-100" src="{{{image}}}">
+                                    <div class="image-block">
+                                        <div id="carousel-template-{{id}}" class="carousel slide" data-ride="carousel" data-interval="1000">
+                                            {{#showimageindicators}}
+                                            <ol class="carousel-indicators">
+                                                {{#backimages}}
+                                                <li data-target="#carousel-template-{{id}}" data-slide-to="{{pos}}" class="{{#active}} active{{/active}}"></li>
+                                                {{/backimages}}
+                                            </ol>
+                                            {{/showimageindicators}}
+                                            <div class="carousel-inner">
+                                                {{#backimages}}
+                                                <div class="item {{#active}}active{{/active}}">
+                                                    <img class="d-block w-100" src="{{{image}}}">
+                                                </div>
+                                                {{/backimages}}
                                             </div>
-                                            {{/backimages}}
                                         </div>
                                     </div>
-                                </div>
                                 {{/isbackimages}}
                                 <div class="card-content">
                                     <h5 class="card-title">{{title}}</h5>

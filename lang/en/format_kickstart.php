@@ -107,10 +107,16 @@ $string['templatebackimg_help'] = "Allow uploading images to a template.";
 $string['default_templatebackground'] = "Default templates background images";
 $string['default_templatebackground_desc'] = "";
 $string['courseformatoptions'] = "Course format";
+$string['generalrestoresettings'] = 'General restore settings';
+$string['generalusers'] = 'Include users';
+$string['configrestoreusers'] = 'Sets the default for whether to restore users if they were included in the backup.';
+$string['setting_keep_roles_and_enrolments'] = 'Keep current roles and enrolments';
+$string['setting_keep_groups_and_groupings'] = 'Keep current groups and groupings';
+$string['config_keep_roles_and_enrolments'] = 'By default keep current roles and enrolments.';
+$string['config_keep_groups_and_groupings'] = 'By default keep current groups and groupings.';
 $string['templatesview'] = "Templates view";
 $string['templatesview_help'] = "Templates displayed to tiles or list view";
 $string['strtile'] = "Tile";
 $string['strlist'] = "List";
 $string['defaulttemplatesview'] = 'Default templates view';
 $string['defaulttemplatesview_desc'] = 'Default templates displayed to tiles or list view.';
-

@@ -31,6 +31,7 @@ require_once("$CFG->dirroot/backup/util/includes/backup_includes.php");
 
 if ($ADMIN->fulltree) {
     if (format_kickstart_has_pro()) {
+        require_once($CFG->dirroot."/local/kickstart_pro/lib.php");
         $settings->add(new admin_setting_configcheckbox('format_kickstart/coursecreatorredirect',
             get_string('coursecreatorredirect', 'format_kickstart'),
             get_string('coursecreatorredirect_desc', 'format_kickstart'),
@@ -45,7 +46,6 @@ if ($ADMIN->fulltree) {
             get_string('automatictemplate', 'format_kickstart'),
             get_string('automatictemplate_desc', 'format_kickstart'),
             1));
-        require_once($CFG->dirroot. "/local/kickstart_pro/lib.php");
         if (function_exists('local_kickstart_pro_get_template_backimages')) {
             $templatebgoptions = array('maxfiles' => 10, 'subdirs' => 0, 'accepted_types' => ['.jpg', '.png']);
             $settings->add(new admin_setting_configstoredfile(
@@ -93,30 +93,30 @@ if ($ADMIN->fulltree) {
 
     $settings->add(new admin_setting_heading(
         'restoresettings',
-        get_string('generalrestoresettings', 'backup'),
+        get_string('generalrestoresettings', 'format_kickstart'),
         get_string('usedefault_help', 'format_kickstart')
     ));
 
     $settings->add(new admin_setting_configselect(
         'format_kickstart/restore_general_users',
-        get_string('generalusers', 'backup'),
-        get_string('configrestoreusers', 'backup'),
+        get_string('generalusers', 'format_kickstart'),
+        get_string('configrestoreusers', 'format_kickstart'),
         0,
         $options
     ));
 
     $settings->add(new admin_setting_configselect(
         'format_kickstart/restore_replace_keep_roles_and_enrolments',
-        get_string('setting_keep_roles_and_enrolments', 'backup'),
-        get_string('config_keep_roles_and_enrolments', 'backup'),
+        get_string('setting_keep_roles_and_enrolments', 'format_kickstart'),
+        get_string('config_keep_roles_and_enrolments', 'format_kickstart'),
         0,
         $options
     ));
 
     $settings->add(new admin_setting_configselect(
         'format_kickstart/restore_replace_keep_groups_and_groupings',
-        get_string('setting_keep_groups_and_groupings', 'backup'),
-        get_string('config_keep_groups_and_groupings', 'backup'),
+        get_string('setting_keep_groups_and_groupings', 'format_kickstart'),
+        get_string('config_keep_groups_and_groupings', 'format_kickstart'),
         0,
         $options
     ));
@@ -131,6 +131,6 @@ $settings = null;
 $ADMIN->add('courses', new admin_externalpage('kickstarttemplates', get_string('course_templates', 'format_kickstart'),
     new moodle_url('/course/format/kickstart/templates.php'), 'format/kickstart:manage_templates'));
 
-$ADMIN->add('format_kickstart', new admin_externalpage('managetemplates', get_string('manage_templates', 'format_kickstart'),
+$ADMIN->add('format_kickstart', new admin_externalpage('kickstartmanagetemplates', get_string('manage_templates', 'format_kickstart'),
 new moodle_url('/course/format/kickstart/templates.php')));
 

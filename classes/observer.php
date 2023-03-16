@@ -44,8 +44,8 @@ class observer {
             $disable = ($data['other']['value'] == 1) ? true : false;
             $format = substr($plugin, 7);
             if ($disable) {
-                $removetemplates = $DB->get_records_menu('format_kickstart_template',
-                    array('format' => $format, 'courseformat' => 1), '', 'id,id');
+                $removetemplates = $DB->get_records_menu('format_kickstart_template', array('format' => $format,
+                    'courseformat' => 1), '', 'id,id');
                 if ($removetemplates) {
                     $removetemplates = array_keys($removetemplates);
                     $templates = array_diff($templates, $removetemplates);

@@ -71,7 +71,7 @@ class behat_format_kickstart extends behat_base {
         $this->execute("behat_forms::press_button", get_string('savechanges'));
     }
 
-    /**
+     /**
      * Set the kickstart format plugins settings.
      *
      * @Given /^I click kickstart template "(?P<element_string>(?:[^"]|\\")*)"$/

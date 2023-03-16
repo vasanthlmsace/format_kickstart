@@ -25,9 +25,6 @@
 
     /**
      * Controls kicstart javascript.
-     * @param {int} contextid
-     * @param {int} courseid
-     * @return {void}
     */
     var Formatkickstart = function(contextid, courseid) {
         var self = this;
@@ -45,15 +42,15 @@
 
     Formatkickstart.prototype.loadiconElement = "#modal-footer span#load-action";
 
-    Formatkickstart.prototype.courseId = null;
-
     Formatkickstart.prototype.contextId = null;
 
-    Formatkickstart.prototype.templateHandler = function(e) {
+    Formatkickstart.prototype.courseId = null;
+
+    Formatkickstart.prototype.templateHandler = function(event) {
         var self = this;
-        e.preventDefault();
-        let templateName = e.target.getAttribute("data-templatename");
-        let templateId = e.target.getAttribute("data-template");
+        event.preventDefault();
+        let templateName = event.target.getAttribute("data-templatename");
+        let templateId = event.target.getAttribute("data-template");
         self.confirmImportTemplate(templateId, templateName);
     };
 
@@ -83,7 +80,7 @@
                 });
             }
         );
-    };
+    }
 
     return {
         init: function(contextid, courseid) {

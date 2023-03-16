@@ -81,7 +81,11 @@ class course_template_list implements \templatable, \renderable {
         }
         $cohortids = [];
         foreach ($cohorts as $cohort) {
-            $cohortids[] = $cohort->id;
+            if (is_int($cohort)) {
+                $cohortids[] = $cohort;
+            } else {
+                $cohortids[] = $cohort->id;
+            }
         }
 
         $roleids = [];
@@ -111,7 +115,7 @@ class course_template_list implements \templatable, \renderable {
                     $rootcategoryids = json_decode($template->categoryids, true);
                     if (is_array($rootcategoryids)) {
                         foreach ($rootcategoryids as $categoryid) {
-                            $coursecat = \core_course_category::get($categoryid, IGNORE_MISSING);
+                            $coursecat = \coursecat::get($categoryid, IGNORE_MISSING);
                             if ($coursecat) {
                                 $categoryids[] = $categoryid;
                                 if ($template->includesubcategories) {
@@ -148,14 +152,12 @@ class course_template_list implements \templatable, \renderable {
                     break;
                 }
 
-                if (format_kickstart_has_pro()) {
+                if (format_kickstart_has_pro() && function_exists('local_kickstart_pro_get_template_backimages')) {
                     require_once($CFG->dirroot."/local/kickstart_pro/lib.php");
-                    if (function_exists('local_kickstart_pro_get_template_backimages')) {
-                        $template->backimages = local_kickstart_pro_get_template_backimages($template->id);
-                        $template->isbackimages = count($template->backimages);
-                        $template->showimageindicators = !empty($template->backimages) && count($template->backimages)
-                            > 1 ? true : false;
-                    }
+                    $template->backimages = local_kickstart_pro_get_template_backimages($template->id);
+                    $template->isbackimages = count($template->backimages);
+                    $template->showimageindicators = !empty($template->backimages) && count($template->backimages) > 1
+                        ? true : false;
                 }
 
                 $templates[] = $template;

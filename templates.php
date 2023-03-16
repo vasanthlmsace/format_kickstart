@@ -65,7 +65,7 @@ if ($action && $templateid) {
             $enabled = array_flip($templates);
             $current = $enabled[$templateid];
             if ($current == count($enabled) - 1) {
-                break; // Already at the end.
+                break; // Already at the end
             }
             $enabled = array_flip($enabled);
             $enabled[$current] = $enabled[$current + 1];

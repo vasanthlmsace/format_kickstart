@@ -396,11 +396,7 @@ function format_kickstart_add_couseformat_template($templatename, $format, $coun
         $template->sort = $counttemplate;
         $template->courseformat = 1;
         $template->format = $format;
-        if (!defined('BEHAT_SITE_RUNNING')) {
-            $template->visible = ($isenabled) ? 1 : 0;
-        } else {
-            $template->visible = 1;
-        }
+        $template->visible = ($isenabled) ? 1 : 0;
         $templateid = $DB->insert_record('format_kickstart_template', $template);
         array_push($templates, $templateid);
         set_config('kickstart_templates', implode(',', $templates));
@@ -438,12 +434,12 @@ function format_kickstart_update_template_format_options($template) {
                 $data->format = $courseformat;
                 $data->name = $record->name;
                 $data->value = $record->value;
-                if ($isdesignerformat && $record->name == 'coursetype') {
+                if ($isdesignerformat && $record->name == 'designercoursetype') {
                     $data->value = $coursetype;
                 }
                 $DB->insert_record('format_kickstart_options', $data);
             } else {
-                if ($isdesignerformat && $record->name == 'coursetype') {
+                if ($isdesignerformat && $record->name =='designercoursetype') {
                     $record->value = $coursetype;
                 }
                 if ($existrecord->value != $record->value) {
@@ -504,10 +500,10 @@ function format_kickstart_check_format_template() {
             $enabledplug[] = $format->name;
         }
     }
-    $avaenableplug = array_unique($DB->get_records_menu('format_kickstart_template',
-        array('courseformat' => 1, 'visible' => 0), '', 'id,format'));
-    $avadisableplug = array_unique($DB->get_records_menu('format_kickstart_template',
-        array('courseformat' => 1, 'visible' => 1), '', 'id,format'));
+    $avaenableplug = array_unique($DB->get_records_menu('format_kickstart_template', array('courseformat' => 1,
+        'visible' => 0), '', 'id,format'));
+    $avadisableplug = array_unique($DB->get_records_menu('format_kickstart_template', array('courseformat' => 1,
+        'visible' => 1), '', 'id,format'));
     $enableplug = array_intersect($avaenableplug, $enabledplug);
     $disableplug = array_diff($avadisableplug, $enabledplug);
     // Disabled the plugins.
@@ -526,8 +522,7 @@ function format_kickstart_check_format_template() {
     // Enabled the plugins.
     if ($enableplug) {
         foreach ($enableplug as $format) {
-            $addtemplates = $DB->get_records_menu('format_kickstart_template', array('format' => $format,
-                'courseformat' => 1), '', 'id,id');
+            $addtemplates = $DB->get_records_menu('format_kickstart_template', array('format' => $format, 'courseformat' => 1), '', 'id,id');
             if ($addtemplates) {
                 $addtemplates = array_keys($addtemplates);
                 $templates = array_merge($templates, $addtemplates);
@@ -563,7 +558,6 @@ function format_kickstart_check_format_template() {
         $cache->set('templateformat', true);
     }
 }
-
 
 /**
  * Remove the kickstart template settings.

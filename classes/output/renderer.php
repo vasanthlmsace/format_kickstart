@@ -24,6 +24,7 @@
 
 namespace format_kickstart\output;
 
+
 use plugin_renderer_base;
 use renderable;
 
