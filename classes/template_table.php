@@ -56,7 +56,7 @@ class template_table extends \table_sql {
         $headers[] = get_string('title', 'format_kickstart');
         $headers[] = get_string('description', 'format_kickstart');
         $headers[] = get_string('tags');
-        $headers[] =  $strenable . '/' . $strdisable;
+        $headers[] = $strenable . '/' . $strdisable;
         $columns[] = 'title';
         $columns[] = 'description';
         $columns[] = 'tags';
@@ -173,7 +173,7 @@ class template_table extends \table_sql {
         global $OUTPUT;
         $output = $OUTPUT->single_button(
             new \moodle_url('/course/format/kickstart/template.php', ['action' => 'edit', 'id' => $data->id]),
-            get_string('edit', 'format_kickstart'), 'get') ;
+            get_string('edit', 'format_kickstart'), 'get');
         if (!($data->courseformat)) {
             $output .= $OUTPUT->single_button(
                     new \moodle_url('/course/format/kickstart/template.php', ['action' => 'delete', 'id' => $data->id]),
