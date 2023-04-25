@@ -106,6 +106,7 @@ class course_importer {
      *
      * @param string $backuptempdir
      * @param int $courseid
+     * @param int $templateid
      * @throws \base_plan_exception
      * @throws \base_setting_exception
      * @throws \dml_exception
@@ -123,7 +124,7 @@ class course_importer {
             'course_startdate' => $course->startdate,
         ];
 
-       if (get_config('format_kickstart', 'restore_general_users') < 2) {
+        if (get_config('format_kickstart', 'restore_general_users') < 2) {
             if (isset($details->root_settings['users']) && $details->root_settings['users']) {
                 $settings['users'] = (bool) get_config('format_kickstart', 'restore_general_users');
             } else {

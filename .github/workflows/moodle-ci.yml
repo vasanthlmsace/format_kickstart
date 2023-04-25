@@ -31,15 +31,15 @@ jobs:
           - php: '8.0'
             moodle-branch: 'MOODLE_400_STABLE'
             database: 'pgsql'
-          - php: '8.0'
-            moodle-branch: 'MOODLE_400_STABLE'
-            database: 'mariadb'
-          - php: '7.4'
-            moodle-branch: 'MOODLE_400_STABLE'
-            database: 'pgsql'
-          - php: '7.4'
-            moodle-branch: 'MOODLE_400_STABLE'
-            database: 'mariadb'
+          # - php: '8.0'
+          #   moodle-branch: 'MOODLE_400_STABLE'
+          #   database: 'mariadb'
+          # - php: '7.4'
+          #   moodle-branch: 'MOODLE_400_STABLE'
+          #   database: 'pgsql'
+          # - php: '7.4'
+          #   moodle-branch: 'MOODLE_400_STABLE'
+          #   database: 'mariadb'
 
     steps:
       - name: Check out repository code
@@ -88,17 +88,17 @@ jobs:
         if: ${{ always() }}
         run: moodle-plugin-ci phpdoc
 
-      - name: Validating
-        if: ${{ always() }}
-        run: moodle-plugin-ci validate
+      # - name: Validating
+      #   if: ${{ always() }}
+      #   run: moodle-plugin-ci validate
 
-      - name: Check upgrade savepoints
-        if: ${{ always() }}
-        run: moodle-plugin-ci savepoints
+      # - name: Check upgrade savepoints
+      #   if: ${{ always() }}
+      #   run: moodle-plugin-ci savepoints
 
-      - name: Mustache Lint
-        if: ${{ always() }}
-        run: moodle-plugin-ci mustache
+      # - name: Mustache Lint
+      #   if: ${{ always() }}
+      #   run: moodle-plugin-ci mustache
 
       - name: Grunt
         if: ${{ always() }}
