@@ -106,6 +106,7 @@ class course_importer {
      *
      * @param string $backuptempdir
      * @param int $courseid
+     * @param int $templateid
      * @throws \base_plan_exception
      * @throws \base_setting_exception
      * @throws \dml_exception
