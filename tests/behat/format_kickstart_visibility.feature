@@ -1,5 +1,4 @@
 @format @format_kickstart @_file_upload @javascript
-
 Feature: Check the kickstart course format features.
   Background: Create users to check the visbility.
     Given the following "users" exist:
@@ -13,7 +12,7 @@ Feature: Check the kickstart course format features.
       | fullname | shortname | category | enablecompletion | showcompletionconditions | format    | newsitems |
       | Course 1 | C1        | 0        | 1                | 1                        | kickstart | 1         |
       | Course 2 | C2        | 0        | 1                | 1                        | kickstart | 1         |
-      | Course 3 | C3        | 0        | 1                | 1                        | topics    | 1         |
+      | Course 3 | C3        | 0        | 1                | 1                        | kickstart | 1         |
       | Course 4 | C4        | 0        | 1                | 1                        | kickstart | 1         |
     And the following "categories" exist:
       | name | category | idnumber |
@@ -163,10 +162,6 @@ Feature: Check the kickstart course format features.
   Scenario: Check the single activity format template
     Given I log in as "admin"
     And I am on "Course 3" course homepage with editing mode on
-    And I navigate to "Settings" in current page administration
-    And I set the following fields to these values:
-      | format | kickstart |
-    Then I press "Save and display"
     Then I should see "Course templates"
     And I should see "Single activity format"
     And I click kickstart template ".use-template[data-templatename=\"Single activity format\"]"
