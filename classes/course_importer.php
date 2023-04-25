@@ -57,6 +57,7 @@ class course_importer {
         require_once($CFG->dirroot."/course/lib.php");
         $PAGE->set_context(\context_course::instance($courseid));
         $template = $DB->get_record('format_kickstart_template', ['id' => $templateid], '*', MUST_EXIST);
+
         if (!$template->courseformat) {
             $fs = get_file_storage();
             $files = $fs->get_area_files(\context_system::instance()->id, 'format_kickstart', 'course_backups',
@@ -71,7 +72,7 @@ class course_importer {
             $backuptempdir = make_backup_temp_directory('template' . $templateid);
             $files[0]->extract_to_pathname($fp, $backuptempdir);
 
-            self::import('template' . $templateid, $courseid);
+            self::import('template' . $templateid, $courseid, $templateid);
         } else {
             $course = (array) $DB->get_record('course', array('id' => $courseid));
             $course['format'] = $template->format;
@@ -110,11 +111,11 @@ class course_importer {
      * @throws \dml_exception
      * @throws \restore_controller_exception
      */
-    public static function import($backuptempdir, $courseid) {
+    public static function import($backuptempdir, $courseid, $templateid) {
         global $USER, $DB;
 
         $course = $DB->get_record('course', ['id' => $courseid]);
-
+        $details = \backup_general_helper::get_backup_information($backuptempdir);
         $settings = [
             'overwrite_conf' => true,
             'course_shortname' => $course->shortname,
@@ -122,8 +123,12 @@ class course_importer {
             'course_startdate' => $course->startdate,
         ];
 
-        if (get_config('format_kickstart', 'restore_general_users') < 2) {
-            $settings['users'] = (bool)get_config('format_kickstart', 'restore_general_users');
+       if (get_config('format_kickstart', 'restore_general_users') < 2) {
+            if (isset($details->root_settings['users']) && $details->root_settings['users']) {
+                $settings['users'] = (bool) get_config('format_kickstart', 'restore_general_users');
+            } else {
+                $settings['users'] = \backup::ENROL_NEVER;
+            }
         }
 
         if (get_config('format_kickstart', 'restore_replace_keep_roles_and_enrolments') < 2) {
@@ -137,11 +142,13 @@ class course_importer {
             $settings['groups'] =
                 (bool)get_config('format_kickstart', 'restore_replace_keep_groups_and_groupings');
         }
+
         try {
             // Now restore the course.
             $target = get_config('format_kickstart', 'importtarget') ?: \backup::TARGET_EXISTING_DELETING;
             $rc = new \restore_controller($backuptempdir, $course->id, \backup::INTERACTIVE_NO,
                 \backup::MODE_GENERAL, $USER->id, $target);
+
             foreach ($settings as $settingname => $value) {
                 $setting = $rc->get_plan()->get_setting($settingname);
                 if ($setting->get_status() == \base_setting::LOCKED_BY_PERMISSION) {
