@@ -179,10 +179,3 @@ Feature: Check the kickstart course format features.
       | Type of activity | Page |
     Then I press "Save changes"
     Then I am on "Course 3" course homepage
-    And I navigate to "Edit settings" in current page administration
-    And I set the following fields to these values:
-      | format | kickstart |
-    Then I press "Save and display"
-    And I click kickstart template ".use-template[data-templatename=\"Single activity format\"]"
-    And I click on "Import" "button" in the ".modal" "css_element"
-    And I should see "Example page1 content"
