@@ -167,7 +167,10 @@ Feature: Check the kickstart course format features.
     And I click kickstart template ".use-template[data-templatename=\"Single activity format\"]"
     And I click on "Import" "button" in the ".modal" "css_element"
     And I start watching to see if a new page loads
-    Then I should see "General news and announcements"
+    And I set the following fields to these values:
+      | Forum name | Test Forum |
+    Then I press "Save and display"
+    Then I should see "Test Forum"
     And I navigate to "Plugins > Course formats > Manage templates" in site administration
     Then I click on "Edit" "button" in the "Single activity format" "table_row"
     And I should see "Edit template"
@@ -175,10 +178,3 @@ Feature: Check the kickstart course format features.
       | Type of activity | Page |
     Then I press "Save changes"
     Then I am on "Course 3" course homepage
-    And I navigate to "Settings" in current page administration
-    And I set the following fields to these values:
-      | format | kickstart |
-    Then I press "Save and display"
-    And I click kickstart template ".use-template[data-templatename=\"Single activity format\"]"
-    And I click on "Import" "button" in the ".modal" "css_element"
-    And I should see "Example page1 content"
