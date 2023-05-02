@@ -170,7 +170,7 @@ Feature: Check the kickstart course format features.
     And I set the following fields to these values:
       | Forum name | Test Forum |
     Then I press "Save and display"
-    Then I should see "Test Forum"
+    Then I should see "Add a new discussion topic"
     And I navigate to "Plugins > Course formats > Manage templates" in site administration
     Then I click on "Edit" "button" in the "Single activity format" "table_row"
     And I should see "Edit template"
