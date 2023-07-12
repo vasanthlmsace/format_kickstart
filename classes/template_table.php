@@ -91,6 +91,8 @@ class template_table extends \table_sql {
 
     /**
      * Generate description.
+     * @param \stdClass $data
+     * @return mixed
      */
     public function col_description($data) {
         $context = \context_system::instance();
