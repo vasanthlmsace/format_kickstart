@@ -89,6 +89,9 @@ class template_table extends \table_sql {
 
     /**
      * Generate title.
+     *
+     * @param \stdClass $data
+     * @return mixed
      */
     public function col_title($data) {
         return format_string($data->title);
