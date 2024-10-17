@@ -88,7 +88,7 @@ class template_table extends \table_sql {
     }
 
     /**
-     *  Generate title.s
+     * Generate title.
      *
      * @param \stdClass $data
      * @return mixed
