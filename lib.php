@@ -26,6 +26,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot. '/course/format/lib.php');
 
+
+use format_kickstart\output\course_template_list;
+
 /**
  * Main class for the Kickstart course format
  *
@@ -42,6 +45,34 @@ class format_kickstart extends core_courseformat\base {
      */
     public function supports_news() {
         return false;
+    }
+
+
+    /**
+     * Course-specific information to be output on any course page (usually above navigation bar)
+     *
+     * Example of usage:
+     * define
+     * class format_FORMATNAME_XXX implements renderable {}
+     *
+     * create format renderer in course/format/FORMATNAME/renderer.php, define rendering function:
+     * class format_FORMATNAME_renderer extends plugin_renderer_base {
+     *     protected function render_format_FORMATNAME_XXX(format_FORMATNAME_XXX $xxx) {
+     *         return html_writer::tag('div', 'This is my header/footer');
+     *     }
+     * }
+     *
+     * Return instance of format_FORMATNAME_XXX in this function, the appropriate method from
+     * plugin renderer will be called
+     *
+     * @return null|\renderable null for no output or object with data for plugin renderer
+     */
+    public function course_header() {
+        global $CFG;
+        if (format_kickstart_has_pro()) {
+            require_once($CFG->dirroot. "/local/kickstart_pro/lib.php");
+            local_kickstart_pro_redirect_automatictemplate();
+        }
     }
 
     /**
