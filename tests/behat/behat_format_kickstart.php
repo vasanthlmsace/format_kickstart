@@ -37,6 +37,58 @@ use Behat\Gherkin\Node\TableNode as TableNode;
  */
 class behat_format_kickstart extends behat_base {
 
+
+    /**
+     * @Given /^I should see course format "(?P<element_string>(?:[^"]|\\")*)"$/
+     * @param string $format The course data
+     */
+    public function i_should_see_define_course_format($format) {
+        global $CFG;
+        if ($CFG->branch <= '402') {
+            switch($format) {
+                case 'Single activity':
+                    $format = 'Single activity format';
+                    break;
+                case 'Social':
+                    $format = 'Social format';
+                    break;
+                case 'Custom sections':
+                    $format = 'Topics format';
+                    break;
+                case 'Weekly sections':
+                    $format = 'Weekly format';
+                    break;
+            }
+        }
+        $this->execute('behat_general::assert_page_contains_text', [$format]);
+    }
+
+
+    /**
+     * @Given /^I should not see course format "(?P<element_string>(?:[^"]|\\")*)"$/
+     * @param string $format The course data
+     */
+    public function i_should_not_see_define_course_format($format) {
+        global $CFG;
+        if ($CFG->branch <= '402') {
+            switch($format) {
+                case 'Single activity':
+                    $format = 'Single activity format';
+                    break;
+                case 'Social':
+                    $format = 'Social format';
+                    break;
+                case 'Custom sections':
+                    $format = 'Topics format';
+                    break;
+                case 'Weekly sections':
+                    $format = 'Weekly format';
+                    break;
+            }
+        }
+        $this->execute('behat_general::assert_page_not_contains_text', [$format]);
+    }
+
     /**
      * Creates a new template with the provided table data matching template settings names with the desired values.
      *
