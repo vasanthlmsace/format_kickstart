@@ -129,7 +129,8 @@ Feature: Check the kickstart course format features.
     And I navigate to "Plugins > Course formats > Manage course formats" in site administration
     # Todo:
     #And I click on "Disable" "link" in the "Single activity" "table_row"
-    Then I click on "table.manageformattable tr:nth-child(3) td:nth-child(2)" "css_element"
+    Then I click on disable link single activity
+    #Then I click on "table.manageformattable tr:nth-child(3) td:nth-child(2)" "css_element"
     #And I wait "5" seconds
     Then I navigate to "Plugins > Course formats > Manage templates" in site administration
     And I should not see course format "Single activity"
@@ -144,12 +145,11 @@ Feature: Check the kickstart course format features.
     And I click on "Import" "button" in the ".modal" "css_element"
     And I start watching to see if a new page loads
     Then I should see "Course 1"
-    Then I wait "5" seconds
     Then ".course-content" "css_element" should exist
     And I navigate to "Plugins > Course formats > Manage templates" in site administration
     # TODo:
     #Then I click on "Edit" "button" in the "Custom sections" "table_row"
-    Then I click on "table tr:nth-child(1) td:nth-child(5) button" "css_element"
+    Then I click on enable link custom sections
     And I should see "Edit template"
     And I set the following fields to these values:
       | Course layout | Show one section per page |
@@ -168,15 +168,18 @@ Feature: Check the kickstart course format features.
     And I am on "Course 3" course homepage with editing mode on
     And I should see course format "Single activity"
     # Todo:
-    #And I click kickstart template ".use-template[data-templatename=\"Single activity\"]"
-    Then I click on ".template-list .card-deck:nth-child(2) .card:nth-child(2) .card-footer a" "css_element"
+    #And I click kickstart course format template ".use-template[data-templatename=\"Single activity\"]"
+    And I click kickstart single activity format template
+    #Then I click on ".template-list .card-deck:nth-child(2) .card:nth-child(2) .card-footer a" "css_element"
     And I click on "Import" "button" in the ".modal" "css_element"
+    #Then I wait "30" seconds
     And I check single activity condition kickstart:
       | Forum name | Test Forum |
     And I navigate to "Plugins > Course formats > Manage templates" in site administration
     # Todo:
+    Then I click on enable link single activity
     #Then I click on "Edit" "button" in the "Single activity" "table_row"
-    Then I click on "table tr:nth-child(3) td:nth-child(5) button" "css_element"
+    #Then I click on "table tr:nth-child(3) td:nth-child(5) button" "css_element"
     And I should see "Edit template"
     And I set the following fields to these values:
       | Type of activity | Page |
