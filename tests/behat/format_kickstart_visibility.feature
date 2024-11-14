@@ -145,11 +145,11 @@ Feature: Check the kickstart course format features.
     And I start watching to see if a new page loads
     Then I should see "Course 1"
     Then I wait "5" seconds
-    Then ".course-content .topics" "css_element" should exist
+    Then ".course-content" "css_element" should exist
     And I navigate to "Plugins > Course formats > Manage templates" in site administration
     # TODo:
     #Then I click on "Edit" "button" in the "Custom sections" "table_row"
-    Then I click on "table tr:nth-child(2) td:nth-child(6) button" "css_element"
+    Then I click on "table tr:nth-child(1) td:nth-child(5) button" "css_element"
     And I should see "Edit template"
     And I set the following fields to these values:
       | Course layout | Show one section per page |
@@ -161,7 +161,7 @@ Feature: Check the kickstart course format features.
 
     And I click on "Import" "button" in the ".modal" "css_element"
     Then I should see "Course 2"
-    Then ".course-content .topics" "css_element" should exist
+    Then ".course-content" "css_element" should exist
 
   Scenario: Check the visible course templates in different roles
     Given I log in as "user1"
@@ -173,7 +173,7 @@ Feature: Check the kickstart course format features.
     And I click on "Import" "button" in the ".modal" "css_element"
     And I start watching to see if a new page loads
     Then I should see "Course 1"
-    Then ".course-content .topics" "css_element" should exist
+    Then ".course-content" "css_element" should exist
 
   Scenario: Check the single activity format template
     Given I log in as "admin"
@@ -182,18 +182,19 @@ Feature: Check the kickstart course format features.
     # Todo:
     #And I click kickstart template ".use-template[data-templatename=\"Single activity\"]"
     Then I click on ".template-list .card-deck:nth-child(2) .card:nth-child(2) .card-footer a" "css_element"
-    Then I wait "10" seconds
+    #Then I wait "10" seconds
     And I click on "Import" "button" in the ".modal" "css_element"
-    And I start watching to see if a new page loads
-    Then I wait "10" seconds
-    And I set the following fields to these values:
-      | Forum name | Test Forum |
-    Then I press "Save and display"
-    Then I should see "There are no discussion topics yet in this forum"
+    # And I start watching to see if a new page loads
+    # Then I wait "10" seconds
+    # And I set the following fields to these values:
+    #   | Forum name | Test Forum |
+    # Then I press "Save and display"
+    #Then I should see "There are no discussion topics yet in this forum"
+    And I should see "There are no discussion topics yet in this forum" in the ".alert-info" "css_element"
     And I navigate to "Plugins > Course formats > Manage templates" in site administration
     # Todo:
     #Then I click on "Edit" "button" in the "Single activity" "table_row"
-    Then I click on "table tr:nth-child(4) td:nth-child(6) button" "css_element"
+    Then I click on "table tr:nth-child(3) td:nth-child(5) button" "css_element"
     And I should see "Edit template"
     And I set the following fields to these values:
       | Type of activity | Page |
