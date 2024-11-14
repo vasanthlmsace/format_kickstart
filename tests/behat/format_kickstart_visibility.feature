@@ -144,6 +144,7 @@ Feature: Check the kickstart course format features.
     And I click on "Import" "button" in the ".modal" "css_element"
     And I start watching to see if a new page loads
     Then I should see "Course 1"
+    Then I wait "5" seconds
     Then ".course-content .topics" "css_element" should exist
     And I navigate to "Plugins > Course formats > Manage templates" in site administration
     # TODo:
@@ -167,8 +168,8 @@ Feature: Check the kickstart course format features.
     Then I am on "Course 1" course homepage
     #Then I wait "5" seconds
     # Todo:
-    And I click kickstart template ".use-template[data-templatename=\"Custom sections\"]"
-    #Then I click on ".template-list .card-deck .card:nth-child(2) .card-footer a" "css_element"
+    #And I click kickstart template ".use-template[data-templatename=\"Custom sections\"]"
+    Then I click on ".template-list .card-deck .card:nth-child(2) .card-footer a" "css_element"
     And I click on "Import" "button" in the ".modal" "css_element"
     And I start watching to see if a new page loads
     Then I should see "Course 1"
