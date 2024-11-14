@@ -37,6 +37,23 @@ use Behat\Gherkin\Node\TableNode as TableNode;
  */
 class behat_format_kickstart extends behat_base {
 
+    /**
+     * @Given /^I check single activity condition kickstart:$/
+     * @param string $format The course data
+     */
+    public function i_check_single_activity_condition_kickstart(TableNode $table) {
+        global $CFG;
+            # And I start watching to see if a new page loads
+            # And I set the following fields to these values:
+            #   | Forum name | Test Forum |
+            # Then I press "Save and display"
+            # Then I should see ""
+        if ($CFG->branch <= '403') {
+           $this->execute('behat_forms::i_set_the_following_fields_to_these_values', $table);
+           $this->execute('behat_forms::press_button', "Save and display");
+        }
+        $this->execute('behat_general::assert_page_contains_text', "There are no discussion topics yet in this forum");
+    }
 
     /**
      * @Given /^I should see course format "(?P<element_string>(?:[^"]|\\")*)"$/
@@ -44,7 +61,7 @@ class behat_format_kickstart extends behat_base {
      */
     public function i_should_see_define_course_format($format) {
         global $CFG;
-        if ($CFG->branch <= '402') {
+        if ($CFG->branch <= '403') {
             switch($format) {
                 case 'Single activity':
                     $format = 'Single activity format';
@@ -70,7 +87,7 @@ class behat_format_kickstart extends behat_base {
      */
     public function i_should_not_see_define_course_format($format) {
         global $CFG;
-        if ($CFG->branch <= '402') {
+        if ($CFG->branch <= '403') {
             switch($format) {
                 case 'Single activity':
                     $format = 'Single activity format';

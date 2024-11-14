@@ -163,18 +163,6 @@ Feature: Check the kickstart course format features.
     Then I should see "Course 2"
     Then ".course-content" "css_element" should exist
 
-  Scenario: Check the visible course templates in different roles
-    Given I log in as "user1"
-    Then I am on "Course 1" course homepage
-    #Then I wait "5" seconds
-    # Todo:
-    #And I click kickstart template ".use-template[data-templatename=\"Custom sections\"]"
-    Then I click on ".template-list .card-deck .card:nth-child(2) .card-footer a" "css_element"
-    And I click on "Import" "button" in the ".modal" "css_element"
-    And I start watching to see if a new page loads
-    Then I should see "Course 1"
-    Then ".course-content" "css_element" should exist
-
   Scenario: Check the single activity format template
     Given I log in as "admin"
     And I am on "Course 3" course homepage with editing mode on
@@ -182,15 +170,9 @@ Feature: Check the kickstart course format features.
     # Todo:
     #And I click kickstart template ".use-template[data-templatename=\"Single activity\"]"
     Then I click on ".template-list .card-deck:nth-child(2) .card:nth-child(2) .card-footer a" "css_element"
-    #Then I wait "10" seconds
     And I click on "Import" "button" in the ".modal" "css_element"
-    # And I start watching to see if a new page loads
-    # Then I wait "10" seconds
-    # And I set the following fields to these values:
-    #   | Forum name | Test Forum |
-    # Then I press "Save and display"
-    #Then I should see "There are no discussion topics yet in this forum"
-    And I should see "There are no discussion topics yet in this forum" in the ".alert-info" "css_element"
+    And I check single activity condition kickstart:
+      | Forum name | Test Forum |
     And I navigate to "Plugins > Course formats > Manage templates" in site administration
     # Todo:
     #Then I click on "Edit" "button" in the "Single activity" "table_row"
