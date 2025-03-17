@@ -15,8 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace format_kickstart\output;
-use format_kickstart\output\kickstartHandler;
-use html_writer;
 
 /**
  * Kickstart page handler.
@@ -26,9 +24,15 @@ use html_writer;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use format_kickstart\output\kickstartHandler;
+use html_writer;
 
 /**
  * Kickstart page.
+ *
+ * @copyright  2021 bdecent gmbh <https://bdecent.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    format_kickstart
  */
 trait kickstart_page {
 

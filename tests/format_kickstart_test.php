@@ -202,7 +202,7 @@ final class format_kickstart_test extends \advanced_testcase {
         $template = $DB->get_record('format_kickstart_template', ['format' => $format, 'courseformat' => 1]);
         $courseformat = course_get_format((object) $params);
         $courseformat->update_course_format_options($data);
-        return format_kickstart_update_template_format_options($template);
+        format_kickstart_update_template_format_options($template);
     }
 
     /**

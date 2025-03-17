@@ -69,7 +69,7 @@ class renderer extends section_renderer {
     /**
      * Renders the action bar for a given page.
      *
-     * @param action_bar $actionbar
+     * @param general_action_bar $actionbar
      * @return string The HTML output
      */
     public function render_action_bar(general_action_bar $actionbar): string {
