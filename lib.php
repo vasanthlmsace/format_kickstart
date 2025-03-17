@@ -26,6 +26,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot. '/course/format/lib.php');
 
+
+use format_kickstart\output\course_template_list;
+
 /**
  * Main class for the Kickstart course format
  *
@@ -33,7 +36,46 @@ require_once($CFG->dirroot. '/course/format/lib.php');
  * @copyright  2021 bdecent gmbh <https://bdecent.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_kickstart extends format_base {
+class format_kickstart extends core_courseformat\base {
+
+    /**
+     * Indicates whether the course format supports the creation of a news forum.
+     *
+     * @return bool
+     */
+    public function supports_news() {
+        return false;
+    }
+
+
+    /**
+     * Course-specific information to be output on any course page (usually above navigation bar)
+     *
+     * Example of usage:
+     * define
+     * class format_FORMATNAME_XXX implements renderable {}
+     *
+     * create format renderer in course/format/FORMATNAME/renderer.php, define rendering function:
+     * class format_FORMATNAME_renderer extends plugin_renderer_base {
+     *     protected function render_format_FORMATNAME_XXX(format_FORMATNAME_XXX $xxx) {
+     *         return html_writer::tag('div', 'This is my header/footer');
+     *     }
+     * }
+     *
+     * Return instance of format_FORMATNAME_XXX in this function, the appropriate method from
+     * plugin renderer will be called
+     *
+     * @return null|\renderable null for no output or object with data for plugin renderer
+     */
+    public function course_header() {
+        global $CFG;
+        if (format_kickstart_has_pro()) {
+            require_once($CFG->dirroot. "/local/kickstart_pro/lib.php");
+            if (function_exists('local_kickstart_pro_redirect_automatictemplate')) {
+                local_kickstart_pro_redirect_automatictemplate();
+            }
+        }
+    }
 
     /**
      * Definitions of the additional options that this course format uses for course
@@ -62,7 +104,7 @@ class format_kickstart extends format_base {
                     'element_attributes' => [
                         [
                             'tile' => new lang_string('strtile', 'format_kickstart'),
-                            'list' => new lang_string('strlist', 'format_kickstart')
+                            'list' => new lang_string('strlist', 'format_kickstart'),
                         ],
                     ],
                     'default' => get_config('format_kickstart', 'defaulttemplatesview'),
@@ -73,7 +115,7 @@ class format_kickstart extends format_base {
                     'help_component' => 'format_kickstart',
                     'default' => [
                         'text' => !empty($defaultuserinstructions) ? $defaultuserinstructions : '',
-                        'format' => FORMAT_HTML
+                        'format' => FORMAT_HTML,
                     ],
                     'type' => PARAM_RAW,
                     'element_type' => 'editor',
@@ -81,7 +123,7 @@ class format_kickstart extends format_base {
                 'userinstructions_format' => [
                     'element_type' => 'hidden',
                     'type' => PARAM_INT,
-                    'label' => 'hidden'
+                    'label' => 'hidden',
                 ],
                 'teacherinstructions' => [
                     'label' => new lang_string('teacherinstructions', 'format_kickstart'),
@@ -89,7 +131,7 @@ class format_kickstart extends format_base {
                     'help_component' => 'format_kickstart',
                     'default' => [
                         'text' => !empty($defaultteacherinstructions) ? $defaultteacherinstructions : '',
-                        'format' => FORMAT_HTML
+                        'format' => FORMAT_HTML,
                     ],
                     'type' => PARAM_RAW,
                     'element_type' => 'editor',
@@ -97,8 +139,8 @@ class format_kickstart extends format_base {
                 'teacherinstructions_format' => [
                     'element_type' => 'hidden',
                     'type' => PARAM_INT,
-                    'label' => 'hidden'
-                ]
+                    'label' => 'hidden',
+                ],
             ];
         }
 
@@ -134,8 +176,8 @@ class format_kickstart extends format_base {
             // Nothing to update anyway.
             return false;
         }
-        $defaultoptions = array();
-        $cached = array();
+        $defaultoptions = [];
+        $cached = [];
         foreach ($allformatoptions as $key => $option) {
             $defaultoptions[$key] = null;
             if (array_key_exists('default', $option)) {
@@ -144,16 +186,16 @@ class format_kickstart extends format_base {
             $cached[$key] = ($sectionid === 0 || !empty($option['cache']));
         }
         $records = $DB->get_records('course_format_options',
-            array('courseid' => $this->courseid,
+            ['courseid' => $this->courseid,
                 'format' => $this->format,
-                'sectionid' => $sectionid
-            ), '', 'name,id,value');
+                'sectionid' => $sectionid,
+            ], '', 'name,id,value');
         $changed = $needrebuild = false;
         foreach ($defaultoptions as $key => $value) {
             if (isset($records[$key])) {
                 if (array_key_exists($key, $data) && $records[$key]->value !== $data[$key]) {
                     $DB->set_field('course_format_options', 'value',
-                        $data[$key], array('id' => $records[$key]->id));
+                        $data[$key], ['id' => $records[$key]->id]);
                     $changed = true;
                     $needrebuild = $needrebuild || $cached[$key];
                 }
@@ -170,13 +212,13 @@ class format_kickstart extends format_base {
 
                 $newvalue = !is_array($newvalue) ? $newvalue : $newvalue['text'];
 
-                $DB->insert_record('course_format_options', array(
+                $DB->insert_record('course_format_options', [
                     'courseid' => $this->courseid,
                     'format' => $this->format,
                     'sectionid' => $sectionid,
                     'name' => $key,
-                    'value' => $newvalue
-                ));
+                    'value' => $newvalue,
+                ]);
             }
         }
         if ($needrebuild) {
@@ -230,27 +272,17 @@ class format_kickstart extends format_base {
         if (is_string($course->userinstructions)) {
             $course->userinstructions = [
                 'text' => $course->userinstructions,
-                'format' => $course->userinstructions_format
+                'format' => $course->userinstructions_format,
             ];
         }
         if (is_string($course->teacherinstructions)) {
             $course->teacherinstructions = [
                 'text' => $course->teacherinstructions,
-                'format' => $course->teacherinstructions_format
+                'format' => $course->teacherinstructions_format,
             ];
         }
 
         return $course;
-    }
-
-    /**
-     * Loads all of the course sections into the navigation
-     *
-     * @param global_navigation $navigation
-     * @param navigation_node $node The course node within the navigation
-     */
-    public function extend_course_navigation($navigation, navigation_node $node) {
-        return array();
     }
 
     /**
@@ -389,8 +421,7 @@ function format_kickstart_import_courseformat_template() {
 function format_kickstart_add_couseformat_template($templatename, $format, $counttemplate, $isenabled) {
     global $DB, $CFG;
     $templates = isset($CFG->kickstart_templates) ? explode(",", $CFG->kickstart_templates) : [];
-    if (!$DB->record_exists('format_kickstart_template', ['title' => $templatename,
-                        'courseformat' => 1])) {
+    if (!$DB->record_exists('format_kickstart_template', ['title' => $templatename, 'courseformat' => 1])) {
         $template = new stdClass();
         $template->title = $templatename;
         $template->sort = $counttemplate;
@@ -418,22 +449,21 @@ function format_kickstart_update_template_format_options($template) {
     global $DB, $SITE, $CFG;
     $isdesignerformat = ($template->format == 'designer') ? true : false;
     $records = $DB->get_records('course_format_options',
-        array(
+        [
             'courseid' => $SITE->id,
-            'format' => $template->format
-        )
+            'format' => $template->format,
+        ]
     );
     if ($records) {
         $courseformat = $template->format;
         if ($isdesignerformat) {
-            require_once($CFG->dirroot. "/course/format/designer/lib.php");
             $coursetypes = format_kickstart_get_designer_coursetypes();
             $coursetype = array_search($template->title, $coursetypes);
             $courseformat = strtolower($template->title);
         }
         foreach ($records as $record) {
             if (!$existrecord = $DB->get_record('format_kickstart_options', ['format' => $courseformat,
-                'templateid' => $template->id, 'name' => $record->name])) {
+                'templateid' => $template->id, 'name' => $record->name, ])) {
                 $data = new stdClass();
                 $data->templateid = $template->id;
                 $data->displayname = $template->title;
@@ -469,10 +499,10 @@ function format_kickstart_get_template_format_options($template) {
         $courseformat = strtolower($template->title);
     }
     $records = $DB->get_records_menu('format_kickstart_options',
-        array(
+        [
             'templateid' => $template->id,
-            'format' => $courseformat
-        ),
+            'format' => $courseformat,
+        ],
         '',
         'name,value'
     );
@@ -499,58 +529,18 @@ function format_kickstart_get_template_format_options($template) {
 function format_kickstart_check_format_template() {
     global $DB, $SITE, $CFG;
     $templates = isset($CFG->kickstart_templates) ? explode(",", $CFG->kickstart_templates) : [];
-    $formatplugins = core_plugin_manager::instance()->get_plugins_of_type('format');
-    $enabledplug = [];
-    foreach ($formatplugins as $format) {
-        if ($format->is_enabled()) {
-            $enabledplug[] = $format->name;
-        }
-    }
-    $avaenableplug = array_unique($DB->get_records_menu('format_kickstart_template',
-        array('courseformat' => 1, 'visible' => 0), '', 'id,format'));
-    $avadisableplug = array_unique($DB->get_records_menu('format_kickstart_template',
-        array('courseformat' => 1, 'visible' => 1), '', 'id,format'));
-    $enableplug = array_intersect($avaenableplug, $enabledplug);
-    $disableplug = array_diff($avadisableplug, $enabledplug);
-    // Disabled the plugins.
-    if ($disableplug) {
-        foreach ($disableplug as $format) {
-            $removetemplates = $DB->get_records_menu('format_kickstart_template', array('format' => $format,
-                'courseformat' => 1), '', 'id,id');
-            if ($removetemplates) {
-                $removetemplates = array_keys($removetemplates);
-                $templates = array_diff($templates, $removetemplates);
-            }
-            $DB->set_field('format_kickstart_template', 'visible', 0, array('format' => $format, 'courseformat' => 1));
-        }
-    }
-
-    // Enabled the plugins.
-    if ($enableplug) {
-        foreach ($enableplug as $format) {
-            $addtemplates = $DB->get_records_menu('format_kickstart_template', array('format' => $format,
-                'courseformat' => 1), '', 'id,id');
-            if ($addtemplates) {
-                $addtemplates = array_keys($addtemplates);
-                $templates = array_merge($templates, $addtemplates);
-            }
-            $DB->set_field('format_kickstart_template', 'visible', 1, array('format' => $format, 'courseformat' => 1));
-        }
-    }
-
     // Add the kickstart templates to visible template remove the store config.
-    $records = $DB->get_records_menu('format_kickstart_template', array('visible' => 1), '', 'id,id');
+    $records = $DB->get_records_menu('format_kickstart_template', ['visible' => 1], '', 'id,id');
     if ($records) {
         $records = array_keys($records);
         $addtemplates = array_diff($records, $templates);
         $templates = array_merge($templates, $addtemplates);
     }
-
     set_config('kickstart_templates', implode(',', $templates));
 
     $cache = cache::make('format_kickstart', 'templates');
     if (!$cache->get('templateformat')) {
-        $records = $DB->get_records_menu('format_kickstart_template', array('courseformat' => 1), '', 'id,format');
+        $records = $DB->get_records_menu('format_kickstart_template', ['courseformat' => 1], '', 'id,format');
         $records = array_unique($records);
         $formats = core_plugin_manager::instance()->get_plugins_of_type('format');
         $formats = array_keys($formats);
@@ -575,7 +565,6 @@ function format_kickstart_check_format_template() {
     }
 }
 
-
 /**
  * Remove the kickstart template settings.
  * @param int $templateid
@@ -591,7 +580,6 @@ function format_kickstart_remove_kickstart_templates($templateid) {
     $template = $DB->get_record('format_kickstart_template', ['id' => $templateid]);
     // Delete the template bg.
     $fs->delete_area_files($context->id, 'local_kickstart_pro', 'templatebackimg', $templateid);
-    $template = $DB->get_record('format_kickstart_template', ['id' => $templateid]);
     if ($template->courseformat) {
         $DB->delete_records('format_kickstart_options', ['templateid' => $templateid]);
         $DB->delete_records('course_format_options', ['courseid' => $SITE->id, 'format' => $template->format]);
@@ -614,8 +602,278 @@ function format_kickstart_get_designer_coursetypes() {
             0 => get_string('normal'),
             DESIGNER_TYPE_KANBAN => get_string('kanbanboard', 'format_designer'),
             DESIGNER_TYPE_COLLAPSIBLE => get_string('collapsiblesections', 'format_designer'),
-            DESIGNER_TYPE_FLOW => get_string('type_flow', 'format_designer')
+            DESIGNER_TYPE_FLOW => get_string('type_flow', 'format_designer'),
         ];
         return $coursetypes;
     }
+}
+
+
+/**
+ * Serves file from.
+ *
+ * @param mixed $course course or id of the course
+ * @param mixed $cm course module or id of the course module
+ * @param context $context Context used in the file.
+ * @param string $filearea Filearea the file stored
+ * @param array $args Arguments
+ * @param bool $forcedownload Force download the file instead of display.
+ * @param array $options additional options affecting the file serving
+ * @return bool false if file not found, does not return if found - just send the file
+ */
+function format_kickstart_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
+    require_login();
+    if ($context->contextlevel != CONTEXT_SYSTEM && $filearea != 'description') {
+        return false;
+    }
+
+    $fs = get_file_storage();
+    $file = $fs->get_file($context->id, 'format_kickstart', $filearea, $args[0], '/', $args[1]);
+    if (!$file) {
+        return false;
+    }
+    send_stored_file($file, 0, 0, 0, $options);
+}
+
+
+/**
+ * Add the link in course secondary navigation menu to open the automation instance list page.
+ *
+ * @param  navigation_node $navigation
+ * @param  stdClass $course
+ * @param  context_course $context
+ * @return void
+ */
+function format_kickstart_extend_navigation_course(navigation_node $navigation, stdClass $course, $context) {
+    global $PAGE;
+    $addnode = $context->contextlevel === CONTEXT_COURSE;
+    $addnode = $addnode && has_capability('format/kickstart:import_from_template', $context);
+    if ($addnode &&  $PAGE->course->format !== 'kickstart') {
+        $id = $context->instanceid;
+        $url = new moodle_url('/course/format/kickstart/list.php', [
+            'id' => $id,
+        ]);
+        $node = $navigation->create(get_string('strkickstart', 'format_kickstart'),
+            $url, navigation_node::TYPE_SETTING, null, null);
+        $node->add_class('kickstart-nav');
+        $node->set_force_into_more_menu(false);
+        $node->set_show_in_secondary_navigation(true);
+        $node->key = 'kickstart-nav';
+        $navigation->add_node($node);
+        $PAGE->requires->js_call_amd('format_kickstart/formatkickstart', 'instanceMenuLink', []);
+    }
+}
+
+
+/**
+ * Retrieves the available breadcrumb menu items for the Kickstart format.
+ *
+ * This function generates a list of menu items including course template,
+ * student view, and help. If the Kickstart Pro plugin is available,
+ * additional menu items are added.
+ *
+ * @return array An associative array of breadcrumb menu items
+ */
+function format_kickstart_get_breadcump_menus() {
+    global $CFG;
+    $menus = [
+        'coursetemplate' => get_string('coursetemplate', 'format_kickstart'),
+        'studentview' => get_string('studentview', 'format_kickstart'),
+        'help' => get_string('help', 'format_kickstart'),
+    ];
+
+    if (format_kickstart_has_pro()) {
+        require_once($CFG->dirroot. "/local/kickstart_pro/lib.php");
+        $menus += local_kickstart_pro_get_breadcump_menus();
+    }
+    return $menus;
+}
+
+
+/**
+ * Generates a list of action selector menu items for the Kickstart format.
+ *
+ * Creates URLs and menu labels for course template, student view, and help pages.
+ * If Kickstart Pro is available, additional menu items are added from the pro plugin.
+ *
+ * @param int $courseid The ID of the current course
+ * @param moodle_url $pageurl The base URL for the current page
+ * @return array An associative array of menu URLs and their corresponding labels
+ */
+function format_kickstart_get_action_selector_menus($courseid, $pageurl) {
+    global $CFG;
+
+    $activeurl = new moodle_url($pageurl);
+    $activeurl->remove_params(['nav']);
+
+    $coursetemplateurl = new moodle_url($activeurl, ['nav' => 'coursetemplate']);
+    $studentviewurl = new moodle_url($activeurl, ['nav' => 'studentview']);
+    $helpurl = new moodle_url($activeurl, ['nav' => 'help']);
+
+    $menus[$coursetemplateurl->out(false)] = get_string('coursetemplate', 'format_kickstart');
+    $menus[$studentviewurl->out(false)] = get_string('studentview', 'format_kickstart');
+    $menus[$helpurl->out(false)] = get_string('help' , 'format_kickstart');
+
+    if (format_kickstart_has_pro()) {
+        require_once($CFG->dirroot. "/local/kickstart_pro/lib.php");
+        $menus += local_kickstart_pro_get_action_selector_menus($courseid, $activeurl);
+    }
+    return $menus;
+}
+
+/**
+ * Retrieves and renders a list of course templates for the Kickstart format.
+ *
+ * Handles template-related actions such as changing or searching templates,
+ * and updates course format options accordingly. Initializes JavaScript
+ * and renders the template list using the Kickstart format renderer.
+ *
+ * @param array $args Arguments containing course, action, and template details
+ * @return string Rendered HTML for the course template list
+ */
+function format_kickstart_output_fragment_get_kickstart_templatelist($args) {
+    global $PAGE, $DB, $USER;
+    $course = get_course($args['courseid']);
+    $action = $args['action'];
+
+    $PAGE->requires->js_call_amd('format_kickstart/formatkickstart', 'init',
+    ['contextid' => $args['contextid'], 'courseid' => $course->id, 'nav' => $args['menuid'], 'filteroptions' => false]);
+
+    $params = ['action' => $action, 'value' => $args['value']];
+
+    // Modify the actions related to the kickstart page.
+    if ($action == 'changetemplate') {
+        if (!empty($args['search'])) {
+            $params['action'] = "searchtemplate";
+            $params['value'] = $args['search'];
+        }
+
+        if ($DB->record_exists('course_format_options', ['courseid' => $course->id, 'name' => 'templatesview'])) {
+            $DB->set_field('course_format_options', 'value', $args['value'], ['courseid' => $course->id,
+            'name' => 'templatesview']);
+        } else {
+            $record = new stdClass();
+            $record->courseid = $course->id;
+            $record->format = 'kickstart';
+            $record->name = 'templatesview';
+            $record->sectionid = 0;
+            $record->value = $args['value'];
+            $DB->insert_record('course_format_options', $record);
+        }
+    }
+    $renderer = $PAGE->get_renderer('format_kickstart');
+
+    return $renderer->render(new course_template_list($course, $USER->id, $params));
+}
+
+
+/**
+ * Retrieves and renders a list of courses for the Kickstart format library.
+ *
+ * Handles course search, sorting, and pagination for the course library import feature.
+ * Initializes JavaScript and renders the course list using the Kickstart format renderer.
+ *
+ * @param array $args Arguments containing search parameters, course context, and pagination details
+ * @return string Rendered HTML for the course library list
+ */
+function format_kickstart_output_fragment_get_library_courselist($args) {
+    global $PAGE;
+
+    $_GET['search'] = $args['searchcourse'];
+    $sorttype = is_null($args['sort']) ? 'relevance' : $args['sort'];
+
+    $customvalues = json_decode($args['customvalues']);
+    $course = get_course($args['courseid']);
+    $context = \context::instance_by_id($args['contextid']);
+    $nav = $args['menuid'];
+    $page = $args['page'];
+
+    $PAGE->requires->js_call_amd('format_kickstart/formatkickstart', 'init',
+    ['contextid' => $context->id, 'courseid' => $course->id, 'nav' => $nav, 'filteroptions' => false]);
+
+    $renderer = $PAGE->get_renderer('format_kickstart');
+    return $renderer->render(new \format_kickstart\output\import_course_list((array) $customvalues, $sorttype, $page));
+}
+
+
+/**
+ * Generates a template for importing modules with section information.
+ *
+ * Prepares a template containing module import information and a list of course sections
+ * to be rendered in the module import interface.
+ *
+ * @param array $args Arguments containing the main course ID
+ * @return string Rendered HTML template for module import
+ */
+function format_kickstart_output_fragment_get_import_module_box($args) {
+    global $PAGE, $OUTPUT;
+    $template = [];
+    $template['information'] = get_string('importmoduleinformation', 'format_kickstart');
+    $modinfo = get_fast_modinfo($args['maincourse']);
+    $course = course_get_format($args['maincourse'])->get_course();
+    $modinfosections = $modinfo->get_sections();
+    $sections = $modinfo->get_section_info_all();
+    $sectionsdata = [];
+    foreach ($sections as $section) {
+        $list['id'] = $section->id;
+        $list['name'] = get_section_name($course, $section->section);
+        $list['number'] = $section->section;
+        $sectionsdata[] = $list;
+    }
+    $template['sections'] = $sectionsdata;
+    return $OUTPUT->render_from_template('format_kickstart/import_module_list', $template);
+}
+
+
+/**
+ * Imports an activity module from one course to another using Moodle's backup and restore functionality.
+ *
+ * This function handles the process of importing a single course module to a specified section,
+ * performing necessary security checks and using Moodle's backup and restore controllers.
+ *
+ * @param array $args Arguments containing course and module information
+ *                    - maincourse: The destination course ID
+ *                    - cmid: The course module ID to be imported
+ *                    - sectionid: The target section ID for the imported module
+ * @return int The ID of the newly imported course module
+ */
+function format_kickstart_output_fragment_import_activity_courselib($args) {
+    global $USER, $CFG, $DB, $PAGE;
+    require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
+    require_once($CFG->dirroot . '/course/format/classes/base.php');
+    // Security checks.
+    $context = \context_course::instance($args['maincourse']);
+    require_capability('moodle/course:manageactivities', $context);
+
+    // Use Moodle's backup/restore functionality.
+    $bc = new backup_controller(backup::TYPE_1ACTIVITY, $args['cmid'], backup::FORMAT_MOODLE,
+        backup::INTERACTIVE_NO, backup::MODE_IMPORT, $USER->id);
+    $bc->execute_plan();
+    $backupid = $bc->get_backupid();
+    $bc->destroy();
+
+    $rc = new restore_controller($backupid, $args['maincourse'],
+        backup::INTERACTIVE_NO, backup::MODE_IMPORT, $USER->id, backup::TARGET_EXISTING_ADDING);
+    // Set target section using settings.
+    $plan = $rc->get_plan();
+    $rc->execute_precheck();
+    $rc->execute_plan();
+
+    // Get mapping data from restore.
+    $rc->destroy();
+
+    $record = $DB->get_record_sql("SELECT * FROM {course_modules} WHERE course = ? ORDER BY id DESC",
+        [$args['maincourse']], IGNORE_MULTIPLE);
+
+    $courseformat = course_get_format($args['maincourse']);
+    $maincourserecord = $courseformat->get_course();
+    $modinfo = get_fast_modinfo($maincourserecord);
+    $cm = $modinfo->get_cm($record->id);
+    $targetsection = $modinfo->get_section_info_by_id($args['sectionid'], MUST_EXIST);
+
+    moveto_module($cm, $targetsection);
+    // Any state action mark the state cache as dirty.
+    core_courseformat\base::session_cache_reset($maincourserecord);
+
+    return $record->id;
 }

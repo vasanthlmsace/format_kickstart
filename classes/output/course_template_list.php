@@ -51,14 +51,22 @@ class course_template_list implements \templatable, \renderable {
     private $userid;
 
     /**
+     *
+     * @var array
+     */
+    private $params;
+
+    /**
      * Constructor.
      *
      * @param \stdClass $course
      * @param int $userid
+     * @param array $params
      */
-    public function __construct(\stdClass $course, $userid) {
+    public function __construct(\stdClass $course, $userid, array $params = []) {
         $this->course = course_get_format($course)->get_course();
         $this->userid = $userid;
+        $this->params = $params;
     }
 
     /**
@@ -69,10 +77,8 @@ class course_template_list implements \templatable, \renderable {
      * @throws \moodle_exception
      */
     public function get_templates() {
-        global $DB, $COURSE, $CFG;
-
+        global $DB, $COURSE, $CFG, $USER;
         $limit = format_kickstart_has_pro() ? 0 : 2 * 2;
-
         $cohorts = [];
         if (function_exists('cohort_get_user_cohorts')) {
             $cohorts = cohort_get_user_cohorts($this->userid);
@@ -89,10 +95,38 @@ class course_template_list implements \templatable, \renderable {
             $roleids[] = $role->roleid;
         }
 
+        // Add search conditions.
+        $searchconditions = [];
+        $searchparams = [];
+        if (!empty($this->params)) {
+            $action = $this->params['action'];
+            if ($action == 'searchtemplate') {
+                $search = $this->params['value'];
+                $searchconditions[] = $DB->sql_like('title', ':title', false);
+                $searchconditions[] = $DB->sql_like('description', ':description', false);
+                $searchparams['title'] = '%' . $search . '%';
+                $searchparams['description'] = '%' . $search . '%';
+
+                // Add tag search through a subquery.
+                $searchconditions[] = "EXISTS (
+                    SELECT 1 FROM {tag_instance} ti
+                    JOIN {tag} t ON ti.tagid = t.id
+                    WHERE ti.itemid = {format_kickstart_template}.id
+                    AND ti.itemtype = 'format_kickstart_template'
+                    AND " . $DB->sql_like('t.name', ':tagname', false) . ")";
+                $searchparams['tagname'] = '%' . $search . '%';
+            }
+        }
+
+        if (!empty($searchconditions)) {
+            $whereconditions[] = "(" . implode(" OR ", $searchconditions) . ")";
+        }
+
         $templates = [];
         $listtemplates = [];
+        $whereconditions = '';
         if (format_kickstart_has_pro()) {
-            $params = [];
+            $params = $searchparams;
             $orders = explode(",", $CFG->kickstart_templates);
             $orders = array_filter(array_unique($orders), 'strlen');
             list($insql, $inparams) = $DB->get_in_or_equal($orders, SQL_PARAMS_NAMED);
@@ -100,25 +134,41 @@ class course_template_list implements \templatable, \renderable {
             $subquery = "(CASE " . implode(" ", array_map(function ($value) use ($orders) {
                 return "WHEN id = $value THEN " . array_search($value, $orders);
             }, $orders)) . " END)";
-            $sql = "SELECT * FROM {format_kickstart_template} WHERE visible = 1 AND status = 1 AND ID $insql ORDER BY $subquery";
+
+            $whereconditions = ["visible = 1", "status = 1", "ID $insql"];
+            if (!empty($searchconditions)) {
+                $whereconditions[] = "(" . implode(" OR ", $searchconditions) . ")";
+            }
+
+            $sql = "SELECT * FROM {format_kickstart_template} WHERE " . implode(" AND ", $whereconditions) . " ORDER BY $subquery";
             $listtemplates = $DB->get_records_sql($sql, $params);
         } else {
-            $listtemplates = $DB->get_records('format_kickstart_template', ['visible' => 1, 'status' => 1]);
+            if (!empty($searchconditions)) {
+                $sql = "SELECT * FROM {format_kickstart_template}
+                        WHERE visible = 1 AND status = 1
+                        AND (" . implode(" OR ", $searchconditions) . ")";
+                $listtemplates = $DB->get_records_sql($sql, $searchparams);
+            } else {
+                $listtemplates = $DB->get_records('format_kickstart_template', ['visible' => 1, 'status' => 1]);
+            }
         }
+
         $templatecount = 0;
         if (!empty($listtemplates)) {
             foreach ($listtemplates as $template) {
                 // Apply template access if pro is installed.
                 if (format_kickstart_has_pro()) {
                     $categoryids = [];
-                    $rootcategoryids = json_decode($template->categoryids, true);
-                    if (is_array($rootcategoryids)) {
-                        foreach ($rootcategoryids as $categoryid) {
-                            $coursecat = \core_course_category::get($categoryid, IGNORE_MISSING);
-                            if ($coursecat) {
-                                $categoryids[] = $categoryid;
-                                if ($template->includesubcategories) {
-                                    $categoryids = array_merge($categoryids, $coursecat->get_all_children_ids());
+                    if ($template->categoryids) {
+                        $rootcategoryids = json_decode($template->categoryids, true);
+                        if (is_array($rootcategoryids)) {
+                            foreach ($rootcategoryids as $categoryid) {
+                                $coursecat = \core_course_category::get($categoryid, IGNORE_MISSING);
+                                if ($coursecat) {
+                                    $categoryids[] = $categoryid;
+                                    if ($template->includesubcategories) {
+                                        $categoryids = array_merge($categoryids, $coursecat->get_all_children_ids());
+                                    }
                                 }
                             }
                         }
@@ -127,13 +177,21 @@ class course_template_list implements \templatable, \renderable {
                     if (!has_capability('format/kickstart:manage_templates', \context_course::instance($this->course->id))) {
                         if (($template->restrictcohort && !array_intersect(json_decode($template->cohortids, true), $cohortids)) ||
                             ($template->restrictcategory && !in_array($this->course->category, $categoryids)) ||
+                            ($template->restrictuser && $template->userids && !in_array($USER->id,
+                                json_decode($template->userids, true))) ||
                             ($template->restrictrole && !array_intersect(json_decode($template->roleids, true), $roleids))) {
                             continue;
                         }
                     }
                 }
 
-                $template->description_formatted = format_text($template->description, $template->description_format);
+                $template->description_formatted = format_text(file_rewrite_pluginfile_urls($template->description,
+                                                        'pluginfile.php',
+                                                        \context_system::instance()->id,
+                                                        'format_kickstart',
+                                                        'description',
+                                                        $template->id), $template->descriptionformat);
+                $template->title = format_string($template->title);
                 $tags = [];
                 foreach (\core_tag_tag::get_item_tags('format_kickstart', 'format_kickstart_template', $template->id) as $tag) {
                     $tags[] = '#' . $tag->get_display_name(false);
@@ -141,16 +199,14 @@ class course_template_list implements \templatable, \renderable {
                 $template->hashtags = implode(' ', $tags);
                 $template->link = new \moodle_url('/course/format/kickstart/confirm.php', [
                     'template_id' => $template->id,
-                    'course_id' => $COURSE->id
+                    'course_id' => $COURSE->id,
                 ]);
-
                 if (!$template->courseformat) {
                     $templatecount++;
                 }
-                if ($limit > 0 && $templatecount >= $limit) {
+                if ($limit > 0 && $templatecount > $limit) {
                     break;
                 }
-
                 if (format_kickstart_has_pro()) {
                     require_once($CFG->dirroot."/local/kickstart_pro/lib.php");
                     if (function_exists('local_kickstart_pro_get_template_backimages')) {
@@ -159,8 +215,16 @@ class course_template_list implements \templatable, \renderable {
                         $template->showimageindicators = !empty($template->backimages) && count($template->backimages)
                             > 1 ? true : false;
                     }
-                }
 
+                    $fs = get_file_storage();
+                    $files = $fs->get_area_files(\context_system::instance()->id, 'format_kickstart', 'course_backups',
+                        $template->id, '', false);
+                    $files = array_values($files);
+
+                    if (!isset($files[0]) && !$template->courseformat) {
+                        $template->waitingadhoctask = true;
+                    }
+                }
                 $templates[] = $template;
             }
         }
@@ -177,7 +241,7 @@ class course_template_list implements \templatable, \renderable {
      * @throws \moodle_exception
      */
     public function export_for_template(renderer_base $output) {
-
+        global $DB;
         $templates = $this->get_templates();
         if (!format_kickstart_has_pro() && is_siteadmin()) {
             $template = new \stdClass();
@@ -186,17 +250,19 @@ class course_template_list implements \templatable, \renderable {
             $template->link = 'https://bdecent.de/kickstart/';
             $templates[] = $template;
         }
-
+        $templateview = $DB->get_field('course_format_options', 'value',
+            ['name' => 'templatesview', 'courseid' => $this->course->id]);
         return [
-            'templates' => ['groups' => $this->get_groups($templates)],
+            'templates' => $templates,
             'has_pro' => format_kickstart_has_pro(),
-            'teacherinstructions' => format_text($this->course->teacherinstructions['text'],
-                $this->course->teacherinstructions['format']),
-            'templateclass' => ($this->course->templatesview == 'list') ? 'kickstart-list-view' : 'kickstart-tile-view',
+            'ajaxscript' => (AJAX_SCRIPT) ? true : false,
+            'teacherinstructions' => isset($this->course->teacherinstructions) ?
+                format_text($this->course->teacherinstructions['text'], $this->course->teacherinstructions['format']) : '',
+            'templateclass' => isset($templateview) && ($templateview == 'list') ? 'kickstart-list-view' : 'kickstart-tile-view',
             'notemplates' => empty($templates),
             'canmanage' => has_capability('format/kickstart:manage_templates', \context_system::instance()),
             'createtemplateurl' => new \moodle_url('/course/format/kickstart/template.php', ['action' => 'create']),
-            'managetemplateurl' => new \moodle_url('/course/format/kickstart/templates.php')
+            'managetemplateurl' => new \moodle_url('/course/format/kickstart/templates.php'),
         ];
     }
 

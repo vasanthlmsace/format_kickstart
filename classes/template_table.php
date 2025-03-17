@@ -38,6 +38,16 @@ require_once($CFG->libdir . '/tablelib.php');
 class template_table extends \table_sql {
 
     /**
+     * @var int
+     */
+    public $totaltemplates;
+
+    /**
+     * @var int
+     */
+    public $cnt;
+
+    /**
      * Setup table.
      *
      * @throws \coding_exception
@@ -78,6 +88,14 @@ class template_table extends \table_sql {
     }
 
     /**
+     * Generate title.
+     * @param object $data
+     */
+    public function col_title($data) {
+        return format_string($data->title);
+    }
+
+    /**
      * Generate tag list.
      *
      * @param \stdClass $data
@@ -87,6 +105,21 @@ class template_table extends \table_sql {
         global $OUTPUT;
         return $OUTPUT->tag_list(\core_tag_tag::get_item_tags('format_kickstart', 'format_kickstart_template', $data->id),
             null, 'template-tags');
+    }
+
+    /**
+     * Generate description.
+     * @param \stdClass $data
+     * @return mixed
+     */
+    public function col_description($data) {
+        $context = \context_system::instance();
+        return format_text(file_rewrite_pluginfile_urls($data->description,
+                    'pluginfile.php',
+                    $context->id,
+                    'format_kickstart',
+                    'description',
+                    $data->id), $data->descriptionformat);
     }
 
     /**
@@ -113,14 +146,14 @@ class template_table extends \table_sql {
         $status = '';
         if ($data->status) {
             $status .= \html_writer::link($templateurl->out(false,
-            array('action' => 'disable', 'template' => $data->id)),
-            $OUTPUT->pix_icon('t/hide', get_string('disable'), 'moodle', array('class' => 'iconsmall')),
-                array('id' => "sort-template-up-action")). '';
+            ['action' => 'disable', 'template' => $data->id]),
+            $OUTPUT->pix_icon('t/hide', get_string('disable'), 'moodle', ['class' => 'iconsmall']),
+                ['id' => "sort-template-up-action"]). '';
         } else {
             $status .= \html_writer::link($templateurl->out(false,
-            array('action' => 'enable', 'template' => $data->id)),
-            $OUTPUT->pix_icon('t/show', get_string('enable'), 'moodle', array('class' => 'iconsmall')),
-                array('id' => "sort-template-up-action")). '';
+            ['action' => 'enable', 'template' => $data->id]),
+            $OUTPUT->pix_icon('t/show', get_string('enable'), 'moodle', ['class' => 'iconsmall']),
+                ['id' => "sort-template-up-action"]). '';
         }
         return $status;
     }
@@ -138,21 +171,21 @@ class template_table extends \table_sql {
         $updown = '';
         $strup = get_string('up');
         $strdown = get_string('down');
-        $spacer = $OUTPUT->pix_icon('spacer', '', 'moodle', array('class' => 'iconsmall'));
+        $spacer = $OUTPUT->pix_icon('spacer', '', 'moodle', ['class' => 'iconsmall']);
         if ($this->cnt) {
             $updown .= \html_writer::link($templateurl->out(false,
-            array('action' => 'up', 'template' => $data->id)),
-            $OUTPUT->pix_icon('t/up', $strup, 'moodle', array('class' => 'iconsmall')),
-                array('id' => "sort-template-up-action")). '';
+            ['action' => 'up', 'template' => $data->id]),
+            $OUTPUT->pix_icon('t/up', $strup, 'moodle', ['class' => 'iconsmall']),
+                ['id' => "sort-template-up-action"]). '';
         } else {
             $updown .= $spacer;
         }
 
         if ($this->cnt < ($this->totaltemplates - 1)) {
             $updown .= '&nbsp;'. \html_writer::link($templateurl->out(false,
-            array('action' => 'down', 'template' => $data->id)),
+            ['action' => 'down', 'template' => $data->id]),
             $OUTPUT->pix_icon('t/down', $strdown, 'moodle',
-                array('class' => 'iconsmall')), array('id' => "sort-template-down-action"));
+                ['class' => 'iconsmall']), ['id' => "sort-template-down-action"]);
         } else {
             $updown .= $spacer;
         }

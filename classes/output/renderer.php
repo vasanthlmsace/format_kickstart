@@ -24,7 +24,9 @@
 
 namespace format_kickstart\output;
 
-use plugin_renderer_base;
+use core_courseformat\output\section_renderer;
+use format_kickstart\output\general_action_bar;
+use format_kickstart\output\kickstartHandler;
 use renderable;
 
 /**
@@ -33,7 +35,7 @@ use renderable;
  * @copyright 2021 bdecent gmbh <https://bdecent.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends plugin_renderer_base {
+class renderer extends section_renderer {
 
     /**
      * Overrides the parent so that templatable widgets are handled even without their explicit render method.
@@ -43,7 +45,6 @@ class renderer extends plugin_renderer_base {
      * @throws \moodle_exception
      */
     public function render(renderable $widget) {
-
         $namespacedclassname = get_class($widget);
         $plainclassname = preg_replace('/^.*\\\/', '', $namespacedclassname);
         $rendermethod = 'render_'.$plainclassname;
@@ -63,5 +64,27 @@ class renderer extends plugin_renderer_base {
         } else {
             return parent::render($widget);
         }
+    }
+
+    /**
+     * Renders the action bar for a given page.
+     *
+     * @param action_bar $actionbar
+     * @return string The HTML output
+     */
+    public function render_action_bar(general_action_bar $actionbar): string {
+        $data = $actionbar->export_for_template($this);
+        return $this->render_from_template($actionbar->get_template(), $data);
+    }
+
+
+    /**
+     * Renders a kickstart page by retrieving its content.
+     *
+     * @param kickstartHandler $kickstartpage The kickstart page handler to render
+     * @return string The rendered content of the kickstart page
+     */
+    public function render_kickstart_page(kickstartHandler $kickstartpage) {
+        return $kickstartpage->get_content();
     }
 }

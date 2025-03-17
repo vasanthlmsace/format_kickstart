@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 global $freetemplates;
 $freetemplates = [
 
-    '0' => array(
+    '0' => [
         'id' => 0,
         'title' => 'demo test 1',
         'description' => '<p dir="ltr" style="text-align: left;">test content of the block content</p>',
@@ -41,7 +41,7 @@ $freetemplates = [
         'includesubcategories' => 0,
         'restrictrole' => 0,
         'roleids' => [],
-        'description_format' => 1,
-    ),
+        'descriptionformat' => 1,
+    ],
 ];
 

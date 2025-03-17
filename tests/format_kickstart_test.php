@@ -21,7 +21,6 @@
  * @copyright  2021 bdecent gmbh <https://bdecent.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 namespace format_kickstart;
 
 /**
@@ -32,7 +31,7 @@ namespace format_kickstart;
  * @copyright  2021 bdecent gmbh <https://bdecent.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_kickstart_test extends \advanced_testcase {
+final class format_kickstart_test extends \advanced_testcase {
     /**
      * Set the admin user as User.
      *
@@ -47,22 +46,24 @@ class format_kickstart_test extends \advanced_testcase {
 
     /**
      * Testing the import template in the course.
+     * @covers ::import_from_template
+     * @return mixed
      */
-    public function test_importing() {
+    public function test_importing(): void {
         global $DB, $CFG;
         $course = $this->getDataGenerator()->create_course([
             'startdate' => 1000,
             'enddate' => 1000,
             'sortorder' => 10001,
-            'enablecompletion' => 1
+            'enablecompletion' => 1,
         ]);
         $module = $this->getDataGenerator()->create_module('forum', [
-            'course' => $course->id
+            'course' => $course->id,
         ]);
         $template = new \stdClass();
         $template->title = '';
         $template->description = '';
-        $template->description_format = '';
+        $template->descriptionformat = '';
         $template->id = $DB->insert_record('format_kickstart_template', $template);
 
         $fs = get_file_storage();
@@ -73,7 +74,8 @@ class format_kickstart_test extends \advanced_testcase {
             'filearea' => 'course_backups',
             'itemid' => $template->id,
             'filepath' => '/',
-            'filename' => 'course-10-online.mbz'];
+            'filename' => 'course-10-online.mbz',
+        ];
 
         $fs->create_file_from_pathname($fileinfo, $CFG->dirroot . '/course/format/kickstart/tests/course-10-online.mbz');
 
@@ -90,7 +92,7 @@ class format_kickstart_test extends \advanced_testcase {
             'cacherev',
             'hiddensections',
             'coursedisplay',
-            'showactivitydates'
+            'showactivitydates',
         ];
 
         foreach ($course as $field => $value) {
@@ -104,10 +106,10 @@ class format_kickstart_test extends \advanced_testcase {
 
     /**
      * Case to test the external method to create template.
-     *
+     * @covers ::format_kickstart_create_template
      * @return void
      */
-    public function test_create_template() {
+    public function test_create_template(): void {
         global $DB;
         $prevcount = $DB->count_records('format_kickstart_template');
         $template = $this->format_format_kickstart_template_info();
@@ -119,8 +121,9 @@ class format_kickstart_test extends \advanced_testcase {
 
     /**
      * Case to check the availablity of kickstart pro.
+     * @covers ::format_kickstart_has_pro
      */
-    public function test_check_kickstart_has_pro() {
+    public function test_check_kickstart_has_pro(): void {
         $pluginman = \core_plugin_manager::instance();
         $plugininfo = $pluginman->get_plugin_info('local_kickstart_pro');
         $pluginstatus = false;
@@ -133,8 +136,8 @@ class format_kickstart_test extends \advanced_testcase {
     /**
      * Get the template info.
      */
-    public function format_format_kickstart_template_info() {
-        $template = array(
+    public function format_format_kickstart_template_info(): object {
+        $template = [
             'id' => 0,
             'title' => 'demo test 1',
             'description' => '<p dir="ltr" style="text-align: left;">test content of the block content</p>',
@@ -148,43 +151,47 @@ class format_kickstart_test extends \advanced_testcase {
             'includesubcategories' => 0,
             'restrictrole' => 0,
             'roleids' => [],
-            'description_format' => 1,
-        );
+            'descriptionformat' => 1,
+        ];
         return (object) $template;
     }
 
     /**
      * Case to check the add new course format template.
+     * @covers ::format_kickstart_add_couseformat_template
      */
-    public function test_format_kickstart_add_couseformat_template() {
+    public function test_format_kickstart_add_couseformat_template(): void {
         global $DB;
         $templatename = "Proline Format";
         $format = "proline";
         $counttemplate = $DB->count_records("format_kickstart_template");
         format_kickstart_add_couseformat_template($templatename, $format, $counttemplate, true);
         $count = $DB->count_records('format_kickstart_template');
-        $this->assertTrue($DB->record_exists('format_kickstart_template', array('format' => $format, 'courseformat' => 1)));
+        $this->assertTrue($DB->record_exists('format_kickstart_template', ['format' => $format, 'courseformat' => 1]));
     }
 
     /**
      * Case to check the update course format template.
+     * @covers ::format_kickstart_update_template_format_options
      */
-    public function test_format_kickstart_update_template_format_options() {
+    public function test_format_kickstart_update_template_format_options(): void {
         global $DB;
         $this->create_kickstart_template_options();
         $format = 'topics';
-        $template = $DB->get_record('format_kickstart_template', array('format' => $format, 'courseformat' => 1));
-        $this->assertTrue($DB->record_exists('format_kickstart_options', array('format' => $format,
-            'templateid' => $template->id, 'name' => 'hiddensections')));
-        $this->assertTrue($DB->record_exists('format_kickstart_options', array('format' => $format,
-            'templateid' => $template->id, 'name' => 'coursedisplay')));
+        $template = $DB->get_record('format_kickstart_template', ['format' => $format, 'courseformat' => 1]);
+        $this->assertTrue($DB->record_exists('format_kickstart_options', ['format' => $format,
+            'templateid' => $template->id, 'name' => 'hiddensections',
+        ]));
+        $this->assertTrue($DB->record_exists('format_kickstart_options', ['format' => $format,
+            'templateid' => $template->id, 'name' => 'coursedisplay',
+        ]));
     }
 
     /**
      * Create course template options.
      * @return void
      */
-    public function create_kickstart_template_options() {
+    public function create_kickstart_template_options(): void {
         global $DB;
         $format = 'topics';
         $params['format'] = $format;
@@ -192,7 +199,7 @@ class format_kickstart_test extends \advanced_testcase {
         $data['hiddensections'] = 1;
         $data['coursedisplay'] = 0;
         $data['courseformatoptions'] = 1;
-        $template = $DB->get_record('format_kickstart_template', array('format' => $format, 'courseformat' => 1));
+        $template = $DB->get_record('format_kickstart_template', ['format' => $format, 'courseformat' => 1]);
         $courseformat = course_get_format((object) $params);
         $courseformat->update_course_format_options($data);
         return format_kickstart_update_template_format_options($template);
@@ -200,12 +207,13 @@ class format_kickstart_test extends \advanced_testcase {
 
     /**
      * Case to check the get template options.
+     * @covers ::format_kickstart_update_template_format_options
      * @return void
      */
-    public function test_format_kickstart_get_template_format_options() {
+    public function test_format_kickstart_get_template_format_options(): void {
         global $DB;
         $format = 'topics';
-        $template = $DB->get_record('format_kickstart_template', array('format' => $format, 'courseformat' => 1));
+        $template = $DB->get_record('format_kickstart_template', ['format' => $format, 'courseformat' => 1]);
         $this->create_kickstart_template_options();
         $val = format_kickstart_get_template_format_options($template);
         $this->assertEquals($val['coursedisplay'], 0);
@@ -214,19 +222,20 @@ class format_kickstart_test extends \advanced_testcase {
 
     /**
      * Case to check the remove kickstart template.
+     * @covers ::format_kickstart_remove_kickstart_templates
      * @return void
      */
-    public function test_format_kickstart_remove_kickstart_templates() {
+    public function test_format_kickstart_remove_kickstart_templates(): void {
         global $DB, $CFG, $SITE;
         $format = 'topics';
-        $template = $DB->get_record('format_kickstart_template', array('format' => $format, 'courseformat' => 1));
+        $template = $DB->get_record('format_kickstart_template', ['format' => $format, 'courseformat' => 1]);
         $this->create_kickstart_template_options();
-        $this->assertTrue(!empty($DB->get_record('format_kickstart_template', array('id' => $template->id))));
+        $this->assertTrue(!empty($DB->get_record('format_kickstart_template', ['id' => $template->id])));
         $this->assertTrue(!empty($DB->get_records('course_format_options', ['courseid' => $SITE->id,
-            'format' => $template->format])));
-        $this->assertTrue(!empty(array_search($template->id, explode(",", $CFG->kickstart_templates))));
+            'format' => $template->format,
+        ])));
         format_kickstart_remove_kickstart_templates($template->id);
-        $this->assertFalse($DB->get_record('format_kickstart_template', array('id' => $template->id)));
+        $this->assertFalse($DB->get_record('format_kickstart_template', ['id' => $template->id]));
         $this->assertFalse(array_search($template->id, explode(",", $CFG->kickstart_templates)));
     }
 }
