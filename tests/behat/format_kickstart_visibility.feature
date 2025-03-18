@@ -133,7 +133,6 @@ Feature: Check the kickstart course format features.
     Then I am on "Course 1" course homepage
     And I should see "Course template" in the ".tertiary-navigation-selector .dropdown-toggle" "css_element"
     And I should not see course format "Single activity"
-    And I wait "60" seconds
     And I click on ".use-template[data-templatename=\"Custom sections\"]" "css_element" in the ".template-list" "css_element"
     And I click on "Import" "button" in the ".modal-dialog" "css_element"
     And I start watching to see if a new page loads
