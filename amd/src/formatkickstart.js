@@ -186,9 +186,10 @@
     Formatkickstart.prototype.importCourse = function(args) {
         var self = this;
         var promise = Fragment.loadFragment('format_kickstart', 'import_activity_courselib', self.contextId, args);
-        promise.then((cmid) => {
+        promise.then((viewurl) => {
             if (args.action == 'view') {
-                window.location.href = M.cfg.wwwroot + '/mod/' + args.modname + '/view.php?id=' + cmid;
+                //console.log(viewurl);
+                window.location.href = viewurl;
             } else {
                 str.get_string('importactivitysuccessfully', 'format_kickstart').then(function(string) {
                     Toast.add(string, {type: 'success'});
@@ -352,42 +353,9 @@
         );
     };
 
-    const moveOutMoreMenu = (navMenu) => {
-
-        if (navMenu === null) {
-            return;
-        }
-
-        var menu = navMenu.querySelector('a.kickstart-nav');
-
-        if (menu === null) {
-            return;
-        }
-
-        menu = menu.parentNode;
-        menu.dataset.forceintomoremenu = false;
-        menu.querySelector('a').classList.remove('dropdown-item');
-        menu.querySelector('a').classList.add('nav-link');
-        menu.parentNode.removeChild(menu);
-
-        var moreMenu = navMenu.querySelector('li.dropdownmoremenu a.dropdown-toggle');
-        if (moreMenu) {
-            moreMenu.classList.remove('active');
-        }
-
-        // Insert the stored menus before the more menu.
-        navMenu.insertBefore(menu, navMenu.children[1]);
-        window.dispatchEvent(new Event('resize')); // Dispatch the resize event to create more menu.
-    };
-
     return {
         init: function(contextid, courseid, menuid, filteroptions) {
             return new Formatkickstart(contextid, courseid, menuid, filteroptions);
-        },
-
-        instanceMenuLink: function () {
-            var primaryNav = document.querySelector('.secondary-navigation ul.more-nav');
-            moveOutMoreMenu(primaryNav);
-        },
+        }
     };
 });

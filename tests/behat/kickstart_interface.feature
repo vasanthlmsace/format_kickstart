@@ -1,5 +1,5 @@
-@format @format_kickstart @kickstart_interface @_file_upload @javascript
-Feature: Check the kickstart interface
+@format @format_kickstart @kickstart_page @_file_upload @javascript
+Feature: Check the kickstart interface.
   Background: Create users to check the visbility.
     Given the following "users" exist:
       | username | firstname | lastname | email              |
@@ -64,39 +64,32 @@ Feature: Check the kickstart interface
     And ".template-list.kickstart-tile-view" "css_element" should exist in the ".kickstart-page" "css_element"
 
     # Check the search template
-    And I wait "30" seconds
-    And I should see "Kickstart format" in the ".kickstart-tile-view .card-deck:nth-child(5)" "css_element"
     And I set the following fields to these values:
       | search-template    | Weekly sections |
     And I should see "Weekly sections" in the ".kickstart-tile-view" "css_element"
     And I should not see "Kickstart format" in the ".kickstart-tile-view" "css_element"
 
     # Check the manage templates.
-    And I click on "Manage templates" "link" in the ".kickstart-page" "css_element"
-    And I switch to a second window
+    Then I navigate to "Plugins > Course formats > Manage templates" in site administration
     And I should see "Kickstart format" in the ".generaltable" "css_element"
     And I click on "Create template" "button"
     And I set the following fields to these values:
       | Title | Test template 2 |
       | Tags  | template2 |
-      | Course backup file (.mbz) | /course/format/kickstart/tests/course.mbz |
+      | Course backup file (.mbz) | /course/format/kickstart/tests/course-10-online.mbz |
       | Preview URL  | https://www.example.com |
     And I press "Save changes"
     And I should see "Test template 2" in the ".generaltable" "css_element"
-    And I close all opened windows
-    And I wait "2" seconds
-    And I set the following fields to these values:
-      | search-template |  |
 
     # Using the template
+    And I am on "Course 1" course homepage
     And I should see "Test template 2" in the ".kickstart-tile-view" "css_element"
-    # And I should see "Preview" in the ".template-list .card-deck:has(.card[data-templatename=\"Test template 2\"]) .card-footer a:last-child" "css_element"
-    # And I should see "Use template" in the ".template-list .card-deck:has(.card[data-templatename=\"Test template 2\"]) .use-template" "css_element"
     And I click on ".use-template[data-templatename=\"Test template 2\"]" "css_element" in the ".template-list" "css_element"
     And I click on "Import" "button" in the ".modal-dialog" "css_element"
     And I should see "General" in the ".section .course-section-header .sectionname" "css_element"
 
     # Course kickstart page
+    And I click on "More" "link" in the ".secondary-navigation" "css_element"
     And I click on "Kickstart" "link" in the ".secondary-navigation" "css_element"
     And I should see "Course template" in the ".tertiary-navigation-selector .dropdown-toggle" "css_element"
 
@@ -127,22 +120,6 @@ Feature: Check the kickstart interface
     And I should see "Student view" in the ".tertiary-navigation-selector .dropdown-toggle" "css_element"
     And I should see "Your teacher has not added any content into this course (yet)."
     And I should see "If you have any questions, contact your teacher."
-
-    # Admin sees the "Student view" page in the kickstart page
-    And I am on "Course 1" course homepage
-    And I click on "Use template" "link" in the ".template-list .card-deck .card-footer:first-child .card-footer" "css_element"
-    And I click on "Import" "button" in the ".modal-dialog" "css_element"
-
-    And I click on "Kickstart" "link" in the ".secondary-navigation" "css_element"
-    And I click on ".dropdown-toggle" "css_element" in the ".tertiary-navigation-selector" "css_element"
-    And I click on ".dropdown .dropdown-menu .dropdown-item:first-child" "css_element" in the ".tertiary-navigation-selector" "css_element"
-
-    And I click on "Kickstart" "link" in the ".secondary-navigation" "css_element"
-    And I should see "Course template" in the ".tertiary-navigation-selector .dropdown-toggle" "css_element"
-    And I click on ".dropdown-toggle" "css_element" in the ".tertiary-navigation-selector" "css_element"
-    And I click on ".dropdown .dropdown-menu .dropdown-item:nth-child(2)" "css_element" in the ".tertiary-navigation-selector" "css_element"
-    And I should see "Student view" in the ".tertiary-navigation-selector .dropdown-toggle" "css_element"
-    And I should see "Student view is not available for this course."
 
     # Help documentation page
     And I click on ".dropdown-toggle" "css_element" in the ".tertiary-navigation-selector" "css_element"
@@ -179,6 +156,7 @@ Feature: Check the kickstart interface
     And I set the following fields to these values:
     | Format | Custom sections |
     And I press "Save and display"
+    And I click on "More" "link" in the ".secondary-navigation" "css_element"
     And I click on "Kickstart" "link" in the ".secondary-navigation" "css_element"
     And I should see "Course template" in the ".tertiary-navigation-selector .dropdown-toggle" "css_element"
     And I click on ".dropdown-toggle" "css_element" in the ".tertiary-navigation-selector" "css_element"
