@@ -188,7 +188,6 @@
         var promise = Fragment.loadFragment('format_kickstart', 'import_activity_courselib', self.contextId, args);
         promise.then((viewurl) => {
             if (args.action == 'view') {
-                //console.log(viewurl);
                 window.location.href = viewurl;
             } else {
                 str.get_string('importactivitysuccessfully', 'format_kickstart').then(function(string) {
